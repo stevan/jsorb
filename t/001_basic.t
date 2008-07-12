@@ -50,8 +50,8 @@ isa_ok($proc, 'JSORB::Core::Element');
 is($proc->name, 'add', '... got the right name');
 is($proc->fully_qualified_perl_name, 'Math::Simple::add', '... got the right fully qualified Perl name');
 is($proc->fully_qualified_javascript_name, 'Math.Simple.add', '... got the right fully qualified Javascript name');
-
-
+is($proc->body, \&add, '... got the body we expected');
+is_deeply($proc->spec, [ qw[ Int Int Int ] ], '... got the spec we expected');
 
 
 
