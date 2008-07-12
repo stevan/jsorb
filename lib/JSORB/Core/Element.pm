@@ -18,7 +18,7 @@ has 'parent' => (
     predicate   => 'has_parent', 
 );
 
-has '_fully_qualified_name' => (
+has 'fully_qualified_name' => (
     metaclass => 'Collection::List',
     init_arg  => undef,
     is        => 'ro',
@@ -32,12 +32,6 @@ has '_fully_qualified_name' => (
             unshift @full_name => $current->name;
         }
         \@full_name;
-    },
-    curries   => {
-        'join' => { 
-            'fully_qualified_perl_name'       => [ '::' ],
-            'fully_qualified_javascript_name' => [  '.' ],            
-        } 
     }
 );
 
