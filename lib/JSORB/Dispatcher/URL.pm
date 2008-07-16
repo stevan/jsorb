@@ -19,6 +19,40 @@ has 'router' => (
     builder => '_build_router',
 );
 
+sub handler {
+    my ($self, $call) = @_;   
+    (blessed $call && $call->isa('JSON::RPC::Common::Procedure::Call'))
+        || confess "You must pass a JSON::RPC::Common::Procedure::Call to the handler, not $call";
+    
+    my $method = $call->method;
+    my $match  = $self->router->match($method);
+
+    return $call->return_error(
+        message => ("Could not find method $method in " . $self->namespace->name)
+    ) unless $match;
+    
+    my $procedure = $match->target;
+
+    local $@;
+    my @res = eval { 
+        # TODO:
+        # check arguments here ...
+        # - SL
+        $procedure->body->( $call->params_list ) 
+        # TODO:
+        # check return type here ...
+        # - SL        
+    };
+    if ($@) {
+        return $call->return_error(message => $@);
+    } 
+    else {
+        return $call->return_result(@res);
+    }    
+}
+
+# ........
+
 sub _build_router {
     my $self = shift;
     my $router = Path::Router->new;
@@ -36,12 +70,9 @@ sub _process_elements {
     $base_url .= lc($namespace->name) . '/';
     
     foreach my $element (@{ $namespace->elements }) {
-        if ($element->isa('JSORB::Interface')) { 
-            $self->_process_interface($router, $base_url, $element);
-        }
-        else {
-            $self->_process_elements($router, $base_url, $element);            
-        }
+        $element->isa('JSORB::Interface')
+            ? $self->_process_interface($router, $base_url, $element)
+            : $self->_process_elements($router, $base_url, $element);            
     }
 }
 

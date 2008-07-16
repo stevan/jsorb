@@ -6,7 +6,7 @@ use warnings;
 use Test::More no_plan => 1;
 use Test::Exception;
 
-use lib '/Users/stevan/Projects/CPAN/current/Path-Router/Path-Router/lib';
+use JSON::RPC::Common::Procedure::Call;
 
 BEGIN {
     use_ok('JSORB');
@@ -60,6 +60,74 @@ is(
     $d->router->match('/math/simple/' . $_)->target,
     '... got the right target (' . $_ . ')'
 ) foreach qw[ add sub mul div ];
+
+my @calls = (
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/add",
+	    params => [ 2, 2 ],
+    ),
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/sub",
+	    params => [ 8, 4 ],
+    ),        
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/mul",
+	    params => [ 2, 2 ],
+    ),    
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/div",
+	    params => [ 16, 4 ],
+    ),    
+);
+
+foreach my $call (@calls) {
+    my $res = $d->handler($call);
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok($res->has_result, '... we have a result, not an error');
+    ok(!$res->has_error, '... we have a result, not an error');
+
+    is($res->result, 4, '... got the result we expected');
+}
+
+my @errors = (
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/add_me",
+    ),
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/div",
+	    params => [ 4, 0 ],
+    ),    
+);
+
+foreach my $error (@errors) {
+    my $res = $d->handler($error);
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok(!$res->has_result, '... we have an error, not an result');
+    ok($res->has_error, '... we have an error, not an result');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
