@@ -34,21 +34,9 @@ sub handler {
     my $procedure = $match->target;
 
     local $@;
-    my @res = eval { 
-        # TODO:
-        # check arguments here ...
-        # - SL
-        $procedure->body->( $call->params_list ) 
-        # TODO:
-        # check return type here ...
-        # - SL        
-    };
-    if ($@) {
-        return $call->return_error(message => $@);
-    } 
-    else {
-        return $call->return_result(@res);
-    }    
+    my $res = eval { $procedure->call( $call->params_list ) };
+    return $call->return_error(message => $@) if $@; 
+    return $call->return_result($res);    
 }
 
 # ........

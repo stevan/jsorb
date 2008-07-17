@@ -1,6 +1,8 @@
 package JSORB::Procedure;
 use Moose;
 
+use JSORB::Types;
+
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
@@ -13,10 +15,54 @@ has 'body' => (
 );      
 
 has 'spec' => (
-    is      => 'ro',
-    isa     => 'ArrayRef[Str]',   
-    default => sub { [] },
+    metaclass => 'Collection::Array',
+    is        => 'ro',
+    isa       => 'JSORB::Spec', 
+    coerce    => 1,  
+    default   => sub { [] },
+    provides  => {
+        'empty' => 'has_spec'
+    }
 );
+
+has 'parameter_spec' => (
+    is      => 'ro',
+    isa     => 'JSORB::Spec',   
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        [ @{ $self->spec }[ 0 .. ($#{ $self->spec } - 1) ] ]
+    },
+);
+
+has 'return_value_spec' => (
+    is      => 'ro',
+    isa     => 'JSORB::Spec::Type',   
+    lazy    => 1,
+    default => sub { (shift)->spec->[-1] },
+);
+
+sub call {
+    my ($self, @args) = @_;
+
+    if ($self->has_spec) {
+        my @params = @{ $self->parameter_spec };
+        foreach my $i (0 .. $#args) {
+            ($params[$i]->check($args[$i]))
+                || confess "Parameter $i ($args[$i]) did not pass the spec, "
+                         . "we expected " . $params[$i]->name;
+        }
+    }
+
+    my $result = $self->body->(@args);
+
+    ($self->return_value_spec->check($result))
+        || confess "Return value $result did not pass the return value spec, "
+                 . "we expected " . $self->return_value_spec->name
+        if $self->has_spec;
+    
+    $result;
+}
 
 no Moose; 1;
 

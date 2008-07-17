@@ -50,6 +50,8 @@ is_deeply($proc->fully_qualified_name, [qw[Math Simple add]], '... got the right
 is($proc->body, \&add, '... got the body we expected');
 is_deeply($proc->spec, [ qw[ Int Int Int ] ], '... got the spec we expected');
 
+is_deeply($proc->parameter_spec, [ qw[ Int Int ] ], '... got the parameter spec we expected');
+is($proc->return_value_spec, 'Int', '... got the return value spec we expected');
 
 
 
