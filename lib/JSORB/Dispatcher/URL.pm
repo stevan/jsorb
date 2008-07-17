@@ -33,9 +33,16 @@ sub handler {
     
     my $procedure = $match->target;
 
-    local $@;
     my $res = eval { $procedure->call( $call->params_list ) };
-    return $call->return_error(message => $@) if $@; 
+    if ($@) {
+        return $call->return_error( 
+            message => "$@", 
+            # FIXME: 
+            # wtf is this code for? 
+            # - SL
+            code => 1 
+        );
+    } 
     return $call->return_result($res);    
 }
 

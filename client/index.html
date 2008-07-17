@@ -1,0 +1,42 @@
+<html>
+<head>
+<script language="javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.js"></script>
+<script language="javascript">
+
+$(document).ready(function () {
+    $("#status").ajaxError(function(event, request, settings, error) {
+        $(this).val("Error requesting page " + settings.url);
+        if (error) {
+            $('#output').val("Exception was thrown: " + error);
+        }
+        else {
+            $('#output').val(request.responseText);
+        }
+    });    
+})
+
+function load_test () {
+    var url = $("#url").val();
+    $.get(
+        url,
+        function (data, text_status) {
+            $("#status").val(text_status);
+            $("#output").val(data);            
+        }
+    );
+}
+
+</script>
+</head>
+<body>
+<h1>JSORB Testing Client</h1>
+<hr/>
+<input type="text" size="82" name="url" id="url" value="http://localhost:8080/" />&nbsp;<input type="button" value="Go" onclick="load_test()" />
+<hr/>
+<label for="status">status</label><br/>
+<input type="text" size="82" name="status" id="status"/><br/>
+<label for="output">output</label><br/>
+<textarea rows="20" cols="80" name="output" id="output"></textarea>
+<hr/>
+</body>
+</html>

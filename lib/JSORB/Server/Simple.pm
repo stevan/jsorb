@@ -50,15 +50,19 @@ has 'handler' => (
         my $self = shift;
         my $m    = $self->request_marshaler;
         my $d    = $self->dispatcher;        
-        use Data::Dumper;
         return sub {
             my $c = shift;
+            use Data::Dumper;   
+            warn(('-' x 80) . "\n");
             eval {
                 my $call = $m->request_to_call($c->req);
+                warn "REQUEST: " . Dumper( $call ) . "\n";                
                 my $response = $d->handler($call);
+                warn "RESPONSE: " . Dumper( $response ) . "\n";                
                 $m->write_result_to_response($response, $c->res);
             };
             if ($@) {
+                warn "ERROR: " . Dumper( $@ ) . "\n";                                
                 $c->res->status(500);
                 $c->res->body($@);
             }    

@@ -47,6 +47,14 @@ sub call {
 
     if ($self->has_spec) {
         my @params = @{ $self->parameter_spec };
+        
+        (scalar @params == scalar @args)
+            || confess "Not enough arguments, got (" 
+                     . scalar @args 
+                     . "), expected (" 
+                     . scalar @params 
+                     . ")";
+        
         foreach my $i (0 .. $#args) {
             ($params[$i]->check($args[$i]))
                 || confess "Parameter at position $i ($args[$i]) did not pass the spec, "
