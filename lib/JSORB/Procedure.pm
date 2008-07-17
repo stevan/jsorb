@@ -49,7 +49,7 @@ sub call {
         my @params = @{ $self->parameter_spec };
         foreach my $i (0 .. $#args) {
             ($params[$i]->check($args[$i]))
-                || confess "Parameter $i ($args[$i]) did not pass the spec, "
+                || confess "Parameter at position $i ($args[$i]) did not pass the spec, "
                          . "we expected " . $params[$i]->name;
         }
     }

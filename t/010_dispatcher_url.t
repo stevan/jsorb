@@ -91,9 +91,16 @@ foreach my $call (@calls) {
 }
 
 my @errors = (
+    # method not found ...
     JSON::RPC::Common::Procedure::Call->new(
 	    method => "/math/simple/add_me",
     ),
+    # type failure ...
+    JSON::RPC::Common::Procedure::Call->new(
+	    method => "/math/simple/add",
+	    params => [ 'FOO', 10 ]
+    ),    
+    # division by zero error ...
     JSON::RPC::Common::Procedure::Call->new(
 	    method => "/math/simple/div",
 	    params => [ 4, 0 ],
@@ -106,6 +113,8 @@ foreach my $error (@errors) {
 
     ok(!$res->has_result, '... we have an error, not an result');
     ok($res->has_error, '... we have an error, not an result');
+    
+    #diag $res->error->message;
 }
 
 
