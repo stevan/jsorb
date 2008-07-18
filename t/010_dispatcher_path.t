@@ -10,7 +10,7 @@ use JSON::RPC::Common::Procedure::Call;
 
 BEGIN {
     use_ok('JSORB');
-    use_ok('JSORB::Dispatcher::URL');
+    use_ok('JSORB::Dispatcher::Path');
 }
 
 sub add { $_[0] + $_[1] }
@@ -50,8 +50,8 @@ my $ns = JSORB::Namespace->new(
 );
 isa_ok($ns, 'JSORB::Namespace');
 
-my $d = JSORB::Dispatcher::URL->new(namespace => $ns);
-isa_ok($d, 'JSORB::Dispatcher::URL');
+my $d = JSORB::Dispatcher::Path->new(namespace => $ns);
+isa_ok($d, 'JSORB::Dispatcher::Path');
 
 is($d->namespace, $ns, '... got the same namespace');
 

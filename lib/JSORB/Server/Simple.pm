@@ -7,19 +7,17 @@ use JSON::RPC::Common::Marshal::HTTP;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+has 'dispatcher' => (
+    is       => 'ro',
+    isa      => 'JSORB::Dispatcher::Path',   
+    required => 1,
+);
+
 has 'request_marshaler' => (
     is      => 'ro',
     isa     => 'JSON::RPC::Common::Marshal::HTTP',   
     lazy    => 1,
-    default => sub {
-        JSON::RPC::Common::Marshal::HTTP->new;
-    },
-);
-
-has 'dispatcher' => (
-    is       => 'ro',
-    isa      => 'JSORB::Dispatcher::URL',   
-    required => 1,
+    default => sub { JSON::RPC::Common::Marshal::HTTP->new },
 );
 
 has 'server_engine' => (
@@ -52,17 +50,17 @@ has 'handler' => (
         my $d    = $self->dispatcher;        
         return sub {
             my $c = shift;
-            use Data::Dumper;   
-            warn(('-' x 80) . "\n");
+            #use Data::Dumper;   
+            #warn(('-' x 80) . "\n");
             eval {
                 my $call = $m->request_to_call($c->req);
-                warn "REQUEST: " . Dumper( $call ) . "\n";                
+                #warn "REQUEST: " . Dumper( $call ) . "\n";                
                 my $response = $d->handler($call);
-                warn "RESPONSE: " . Dumper( $response ) . "\n";                
+                #warn "RESPONSE: " . Dumper( $response ) . "\n";                
                 $m->write_result_to_response($response, $c->res);
             };
             if ($@) {
-                warn "ERROR: " . Dumper( $@ ) . "\n";                                
+                #warn "ERROR: " . Dumper( $@ ) . "\n";                                
                 $c->res->status(500);
                 $c->res->body($@);
             }    

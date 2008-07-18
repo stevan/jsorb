@@ -1,4 +1,4 @@
-package JSORB::Dispatcher::URL;
+package JSORB::Dispatcher::Path;
 use Moose;
 
 use Path::Router;
@@ -105,11 +105,11 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::URL - A Moosey solution to this problem
+JSORB::Dispatcher::Path - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use JSORB::Dispatcher::URL;
+  use JSORB::Dispatcher::Path;
 
 =head1 DESCRIPTION
 

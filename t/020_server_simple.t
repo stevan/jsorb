@@ -10,7 +10,7 @@ use Test::Exception;
 
 BEGIN {
     use_ok('JSORB');
-    use_ok('JSORB::Dispatcher::URL');
+    use_ok('JSORB::Dispatcher::Path');
     use_ok('JSORB::Server::Simple');
 }
 
@@ -51,8 +51,8 @@ my $ns = JSORB::Namespace->new(
 );
 isa_ok($ns, 'JSORB::Namespace');
 
-my $d = JSORB::Dispatcher::URL->new(namespace => $ns);
-isa_ok($d, 'JSORB::Dispatcher::URL');
+my $d = JSORB::Dispatcher::Path->new(namespace => $ns);
+isa_ok($d, 'JSORB::Dispatcher::Path');
 
 my $s = JSORB::Server::Simple->new(dispatcher => $d);
 isa_ok($s, 'JSORB::Server::Simple');
