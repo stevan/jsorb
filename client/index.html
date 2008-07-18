@@ -31,7 +31,9 @@ function load_test () {
 <body>
 <h1>JSORB Testing Client</h1>
 <hr/>
-<input type="text" size="82" name="url" id="url" value="http://localhost:8080/" />&nbsp;<input type="button" value="Go" onclick="load_test()" />
+<form onsubmit="return false;">
+<input type="text" size="82" name="url" id="url" value="http://localhost:8080/" />&nbsp;<input type="submit" value="Go" onclick="load_test()" />
+</form>
 <hr/>
 <label for="status">status</label><br/>
 <input type="text" size="82" name="status" id="status"/><br/>

@@ -6,6 +6,8 @@ use Path::Router;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+with 'MooseX::Traits';
+
 has 'namespace' => (
     is       => 'ro',
     isa      => 'JSORB::Namespace',   
@@ -33,7 +35,7 @@ sub handler {
     
     my $procedure = $match->target;
 
-    my $res = eval { $procedure->call( $call->params_list ) };
+    my $res = eval { $self->call_procedure($procedure, $call) };
     if ($@) {
         return $call->return_error( 
             message => "$@", 
@@ -44,6 +46,11 @@ sub handler {
         );
     } 
     return $call->return_result($res);    
+}
+
+sub call_procedure {
+    my ($self, $procedure, $call) = @_;
+    $procedure->call( $call->params_list );
 }
 
 # ........

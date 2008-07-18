@@ -1,6 +1,9 @@
 package JSORB::Interface;
 use Moose;
 
+use JSORB::Procedure;
+use JSORB::Method;
+
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
@@ -8,7 +11,7 @@ extends 'JSORB::Namespace';
 
 has 'procedures' => (
     is      => 'ro',
-    isa     => 'ArrayRef[JSORB::Procedure]',   
+    isa     => 'ArrayRef[JSORB::Procedure | JSORB::Method]',   
     default => sub { [] },
     trigger => sub {
         my $self = shift;
@@ -20,7 +23,7 @@ has 'procedures' => (
 has '_procedure_map' => (
     metaclass => 'Collection::Hash',
     is        => 'ro',
-    isa       => 'HashRef[JSORB::Procedure]', 
+    isa       => 'HashRef[JSORB::Procedure | JSORB::Method]', 
     lazy      => 1,  
     default   => sub {
         my $self = shift;

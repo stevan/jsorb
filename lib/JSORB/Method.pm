@@ -1,4 +1,4 @@
-package JSORB::Procedure;
+package JSORB::Method;
 use Moose;
 
 our $VERSION   = '0.01';
@@ -7,19 +7,42 @@ our $AUTHORITY = 'cpan:STEVAN';
 extends 'JSORB::Core::Element';
    with 'JSORB::Core::Roles::HasSpec';
 
-has 'body' => (
-    is       => 'ro',
-    isa      => 'CodeRef',   
-    required => 1,
+has 'class_name' => (
+    is      => 'ro',
+    isa     => 'ClassName',   
+    lazy    => 1,
+    default => sub { 
+        my $self = shift;
+        ($self->has_parent)
+            || confess "Class name is required, no parent to derive it froms";
+        $self->parent->name 
+    }
+);
+
+has 'method_name' => (
+    is      => 'ro',
+    isa     => 'Str',   
+    lazy    => 1,
+    default => sub { (shift)->name }
 );      
 
 sub call {
-    my ($self, @args) = @_;
+    my ($self, $invocant, @args) = @_;
+    
+    (blessed $invocant && $invocant->isa($self->class_name))
+        || confess "The invocant must be an instance of " 
+                 . $self->class_name 
+                 . " not $invocant";
+    
     $self->check_parameter_spec(@args)
         if $self->has_spec;
-    my $result = $self->body->(@args);
+    
+    my $method = $self->method_name;
+    my $result = $invocant->$method(@args);
+    
     $self->check_return_value_spec($result)
         if $self->has_spec;
+    
     $result;
 }
 
@@ -31,11 +54,11 @@ __END__
 
 =head1 NAME
 
-JSORB::Procedure - A Moosey solution to this problem
+JSORB::Method - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use JSORB::Procedure;
+  use JSORB::Method;
 
 =head1 DESCRIPTION
 

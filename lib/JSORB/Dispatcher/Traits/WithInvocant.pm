@@ -1,17 +1,21 @@
-package JSORB;
-use Moose;
+package JSORB::Dispatcher::Traits::WithInvocant;
+use Moose::Role;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-use JSORB::Namespace;
-use JSORB::Interface;
-use JSORB::Procedure;
-use JSORB::Method;
+has 'invocant' => (
+    is       => 'ro',
+    isa      => 'Object',   
+    required => 1,
+);
 
-use JSORB::Types;
+sub call_procedure {
+    my ($self, $procedure, $call) = @_;
+    $procedure->call( $self->invocant, $call->params_list );
+}
 
-no Moose; 1;
+no Moose::Role; 1;
 
 __END__
 
@@ -19,11 +23,11 @@ __END__
 
 =head1 NAME
 
-JSORB - A Moosey solution to this problem
+JSORB::Dispatcher::Traits::WithInvocant - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use JSORB;
+  use JSORB::Dispatcher::Traits::WithInvocant;
 
 =head1 DESCRIPTION
 
