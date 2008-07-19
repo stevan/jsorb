@@ -39,11 +39,11 @@ my $ns = JSORB::Namespace->new(
             procedures => [
                 JSORB::Method->new(
                     name  => 'bar',
-                    spec  => [ 'Str' ],
+                    spec  => [ 'Unit' => 'Str' ],
                 ),
                 JSORB::Method->new(
                     name  => 'baz',
-                    spec  => [ 'Str' ],
+                    spec  => [ 'Unit' => 'Str' ],
                 ),                                                              
             ]
         )            

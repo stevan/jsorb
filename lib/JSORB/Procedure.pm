@@ -17,10 +17,10 @@ sub call {
     my ($self, @args) = @_;
     $self->check_parameter_spec(@args)
         if $self->has_spec;
-    my $result = $self->body->(@args);
-    $self->check_return_value_spec($result)
+    my @result = ($self->body->(@args));
+    $self->check_return_value_spec(@result)
         if $self->has_spec;
-    $result;
+    $result[0];
 }
 
 no Moose; 1;

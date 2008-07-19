@@ -38,12 +38,12 @@ sub call {
         if $self->has_spec;
     
     my $method = $self->method_name;
-    my $result = $invocant->$method(@args);
+    my @result = ($invocant->$method(@args));
     
-    $self->check_return_value_spec($result)
+    $self->check_return_value_spec(@result)
         if $self->has_spec;
     
-    $result;
+    $result[0];
 }
 
 no Moose; 1;

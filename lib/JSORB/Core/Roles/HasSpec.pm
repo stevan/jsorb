@@ -19,7 +19,7 @@ has 'spec' => (
 
 has 'parameter_spec' => (
     is      => 'ro',
-    isa     => 'JSORB::Spec',   
+    isa     => 'JSORB::ParameterSpec',   
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -39,14 +39,16 @@ sub check_parameter_spec {
     
     my @params = @{ $self->parameter_spec };
     
+    return if scalar @params == 1 && 
+              scalar   @args == 0 && 
+              $params[0]->name eq 'Unit'; 
+    
     (scalar @params == scalar @args)
         || confess "Bad number of arguments, got (" 
                  . scalar @args 
                  . "), expected (" 
                  . scalar @params 
-                 . ")";
-    
-    return unless @params;    
+                 . ")"; 
     
     foreach my $i (0 .. $#args) {
         ($params[$i]->check($args[$i]))

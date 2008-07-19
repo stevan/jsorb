@@ -5,20 +5,19 @@ use Moose::Util::TypeConstraints;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+# ... for JSORB::Core::Roles::HasSpec ....
+
+type 'Unit' => where { () };
+
 class_type 'Moose::Meta::TypeConstraint'
     if !find_type_constraint('Moose::Meta::TypeConstraint');
 
 subtype 'JSORB::Spec::Type'
     => as 'Moose::Meta::TypeConstraint'
     => where {
-        # NOTE:
-        # these are the types of
-        # things that cannot be
-        # serialized into JSON so
-        # will be neither arguments
-        # or return values in our
-        # RPC environment.
-        # - SL
+        # these are the types of things that cannot be
+        # serialized into JSON so will be neither arguments
+        # or return values in our RPC environment.
         ($_->is_a_type_of($_) || return) for map { 
             find_type_constraint($_)
         } qw[
@@ -29,7 +28,27 @@ subtype 'JSORB::Spec::Type'
         ]; 1;
     };
 
-subtype 'JSORB::Spec' => as 'ArrayRef[JSORB::Spec::Type]';
+subtype 'JSORB::Spec' 
+    => as 'ArrayRef[JSORB::Spec::Type]'
+    => where {
+        my $length = scalar @$_;
+        # must have at least 2 elements, 
+        # param and return value
+        return unless $length >= 2;
+        # if the first item is Unit, then 
+        # there can only be 2 items 
+        ($length == 2 || return) if $_->[0]->name eq 'Unit';        
+        # if there are more than one Unit 
+        # type that is wrong ...
+        return if scalar( grep { $_->name eq 'Unit' } @$_ ) > 2; 
+        1;
+    };
+    
+subtype 'JSORB::ParameterSpec' 
+    => as 'ArrayRef[JSORB::Spec::Type]'
+    => where {
+        (scalar @$_ == 1 || return) if $_->[0]->name eq 'Unit'; 1;
+    };    
 
 coerce 'JSORB::Spec' 
     => from 'ArrayRef[Str]'
