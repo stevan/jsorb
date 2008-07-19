@@ -37,6 +37,8 @@ has 'return_value_spec' => (
 sub check_parameter_spec {
     my ($self, @args) = @_;
     
+    return unless $self->has_spec;
+    
     my @params = @{ $self->parameter_spec };
     
     return if scalar @params == 1 && 
@@ -58,10 +60,18 @@ sub check_parameter_spec {
 }
 
 sub check_return_value_spec {
-    my ($self, $result) = @_;
-    ($self->return_value_spec->check($result))
-        || confess "Return value $result did not pass the return value spec, "
-                 . "we expected " . $self->return_value_spec->name;
+    my ($self, @result) = @_;
+    return unless $self->has_spec;
+    
+    my $rv = $self->return_value_spec;
+    
+    (scalar @result == 0)
+        || confess "Return value is Unit but a value was returned @result"
+        if $rv->name eq 'Unit';
+    
+    ($rv->check($result[0]))
+        || confess "Return value $result[0] did not pass the return value spec, "
+                 . "we expected " . $rv->name;
 }
 
 

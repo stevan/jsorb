@@ -15,11 +15,9 @@ has 'body' => (
 
 sub call {
     my ($self, @args) = @_;
-    $self->check_parameter_spec(@args)
-        if $self->has_spec;
+    $self->check_parameter_spec(@args);
     my @result = ($self->body->(@args));
-    $self->check_return_value_spec(@result)
-        if $self->has_spec;
+    $self->check_return_value_spec(@result);
     $result[0];
 }
 
