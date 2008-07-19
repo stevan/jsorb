@@ -57,7 +57,7 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
 my $s = JSORB::Server::Simple->new(dispatcher => $d);
 isa_ok($s, 'JSORB::Server::Simple');
 
-$s->run;
+#$s->run;
 
 
 

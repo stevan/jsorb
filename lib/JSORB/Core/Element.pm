@@ -1,5 +1,6 @@
 package JSORB::Core::Element;
 use Moose;
+use MooseX::AttributeHelpers;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';

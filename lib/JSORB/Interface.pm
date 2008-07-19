@@ -1,5 +1,6 @@
 package JSORB::Interface;
 use Moose;
+use MooseX::AttributeHelpers;
 
 use JSORB::Procedure;
 use JSORB::Method;

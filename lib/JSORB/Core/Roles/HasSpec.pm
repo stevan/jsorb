@@ -7,14 +7,10 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has 'spec' => (
-    metaclass => 'Collection::Array',
     is        => 'ro',
     isa       => 'JSORB::Spec', 
     coerce    => 1,  
-    default   => sub { [] },
-    provides  => {
-        'empty' => 'has_spec'
-    }
+    predicate => 'has_spec',
 );
 
 has 'parameter_spec' => (
@@ -23,6 +19,8 @@ has 'parameter_spec' => (
     lazy    => 1,
     default => sub {
         my $self = shift;
+        ($self->has_spec)
+            || confess "Cannot derive the parameter spec without an overall spec";
         [ @{ $self->spec }[ 0 .. ($#{ $self->spec } - 1) ] ]
     },
 );
@@ -31,7 +29,12 @@ has 'return_value_spec' => (
     is      => 'ro',
     isa     => 'JSORB::Spec::Type',   
     lazy    => 1,
-    default => sub { (shift)->spec->[-1] },
+    default => sub { 
+        my $self = shift;
+        ($self->has_spec)
+            || confess "Cannot derive the parameter spec without an overall spec";
+        $self->spec->[-1] 
+    },
 );
 
 sub check_parameter_spec {
@@ -61,6 +64,7 @@ sub check_parameter_spec {
 
 sub check_return_value_spec {
     my ($self, @result) = @_;
+    
     return unless $self->has_spec;
     
     my $rv = $self->return_value_spec;

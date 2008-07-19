@@ -5,6 +5,7 @@ use warnings;
 
 use Test::More no_plan => 1;
 use Test::Exception;
+use Test::Moose;
 
 BEGIN {
     use_ok('JSORB');
@@ -44,6 +45,7 @@ is_deeply($i->fully_qualified_name, ['Math', 'Simple'], '... got the right fully
 my $proc = $i->get_procedure_by_name('add');
 isa_ok($proc, 'JSORB::Procedure');
 isa_ok($proc, 'JSORB::Core::Element');
+does_ok($proc, 'JSORB::Core::Roles::HasSpec');
 
 is($proc->name, 'add', '... got the right name');
 is_deeply($proc->fully_qualified_name, [qw[Math Simple add]], '... got the right fully qualified Perl name');
@@ -52,6 +54,7 @@ is_deeply($proc->spec, [ qw[ Int Int Int ] ], '... got the spec we expected');
 
 is_deeply($proc->parameter_spec, [ qw[ Int Int ] ], '... got the parameter spec we expected');
 is($proc->return_value_spec, 'Int', '... got the return value spec we expected');
+
 
 
 

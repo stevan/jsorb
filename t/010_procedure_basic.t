@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Test::More no_plan => 1;
+use Test::Exception;
+use Test::Moose;
+
+BEGIN {
+    use_ok('JSORB::Procedure');
+}
+
+sub foo { 'FOO' . (shift) };
+
+my $proc = JSORB::Procedure->new(name => 'foo', body => \&foo);
+isa_ok($proc, 'JSORB::Procedure');
+isa_ok($proc, 'JSORB::Core::Element');
+does_ok($proc, 'JSORB::Core::Roles::HasSpec');
+
+is($proc->name, 'foo', '... got the right name');
+ok(!$proc->has_parent, '... this proc doesnt have a parent');
+is_deeply($proc->fully_qualified_name, ['foo'], '... got the full name');
+is($proc->body, \&foo, '... got the right body');
+
+ok(!$proc->has_spec, '... no spec for this proc');
+
+dies_ok { $proc->parameter_spec } '... cant fetch the parameter spec cause no spec';
+dies_ok { $proc->return_value_spec } '... cant fetch the return value spec cause no spec';
+
+my $result;
+lives_ok {
+    $result = $proc->call('-BAR')
+} '... call succedded';
+is($result, 'FOO-BAR', '... got the result we expected');

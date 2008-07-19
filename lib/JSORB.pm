@@ -24,6 +24,26 @@ JSORB - A Moosey solution to this problem
 =head1 SYNOPSIS
 
   use JSORB;
+  
+  JSORB::Server::Simple->new(
+      dispatcher => JSORB::Dispatcher::Path->new(
+          namespace => JSORB::Namespace->new(
+              name     => 'Math',
+              elements => [
+                  JSORB::Interface->new(
+                      name       => 'Simple',            
+                      procedures => [
+                          JSORB::Procedure->new(
+                              name  => 'add',
+                              body  => sub { $_[0] + $_[0] },
+                              spec  => [ 'Int' => 'Int' => 'Int' ],
+                          )
+                      ]
+                  )            
+              ]
+          )
+      )
+  )->run;
 
 =head1 DESCRIPTION
 
