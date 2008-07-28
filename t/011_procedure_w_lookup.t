@@ -17,7 +17,6 @@ sub foo { 'FOO' . (shift) };
     my $proc = JSORB::Procedure->new(name => 'foo');
     isa_ok($proc, 'JSORB::Procedure');
     isa_ok($proc, 'JSORB::Core::Element');
-    does_ok($proc, 'JSORB::Core::Roles::HasSpec');
 
     is($proc->name, 'foo', '... got the right name');
     ok(!$proc->has_parent, '... this proc doesnt have a parent');
@@ -43,7 +42,6 @@ sub foo { 'FOO' . (shift) };
     );
     isa_ok($proc, 'JSORB::Procedure');
     isa_ok($proc, 'JSORB::Core::Element');
-    does_ok($proc, 'JSORB::Core::Roles::HasSpec');
 
     is($proc->name, 'foo', '... got the right name');
     ok(!$proc->has_parent, '... this proc doesnt have a parent');

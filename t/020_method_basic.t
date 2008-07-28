@@ -24,7 +24,6 @@ BEGIN {
     isa_ok($method, 'JSORB::Method');
     isa_ok($method, 'JSORB::Procedure');
     isa_ok($method, 'JSORB::Core::Element');
-    does_ok($method, 'JSORB::Core::Roles::HasSpec');
 
     is($method->name, 'foo', '... got the right name');
     ok(!$method->has_parent, '... this method doesnt have a parent');
@@ -54,7 +53,6 @@ BEGIN {
     isa_ok($method, 'JSORB::Method');
     isa_ok($method, 'JSORB::Procedure');    
     isa_ok($method, 'JSORB::Core::Element');
-    does_ok($method, 'JSORB::Core::Roles::HasSpec');
 
     is($method->name, 'foo', '... got the right name');
     ok(!$method->has_parent, '... this method doesnt have a parent');

@@ -45,7 +45,6 @@ is_deeply($i->fully_qualified_name, ['Math', 'Simple'], '... got the right fully
 my $proc = $i->get_procedure_by_name('add');
 isa_ok($proc, 'JSORB::Procedure');
 isa_ok($proc, 'JSORB::Core::Element');
-does_ok($proc, 'JSORB::Core::Roles::HasSpec');
 
 is($proc->name, 'add', '... got the right name');
 is_deeply($proc->fully_qualified_name, [qw[Math Simple add]], '... got the right fully qualified Perl name');
