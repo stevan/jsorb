@@ -14,7 +14,7 @@ BEGIN {
 sub foo { 'FOO' . (shift) };
 
 {
-    my $proc = JSORB::Procedure->new(name => 'foo', body => \&foo);
+    my $proc = JSORB::Procedure->new(name => 'foo');
     isa_ok($proc, 'JSORB::Procedure');
     isa_ok($proc, 'JSORB::Core::Element');
     does_ok($proc, 'JSORB::Core::Roles::HasSpec');
@@ -22,7 +22,7 @@ sub foo { 'FOO' . (shift) };
     is($proc->name, 'foo', '... got the right name');
     ok(!$proc->has_parent, '... this proc doesnt have a parent');
     is_deeply($proc->fully_qualified_name, ['foo'], '... got the full name');
-    is($proc->body, \&foo, '... got the right body');
+    is($proc->body, \&::foo, '... got the right body');
 
     ok(!$proc->has_spec, '... no spec for this proc');
 
@@ -39,7 +39,6 @@ sub foo { 'FOO' . (shift) };
 {
     my $proc = JSORB::Procedure->new(
         name => 'foo', 
-        body => \&foo,
         spec => [ 'Str' => 'Str' ]
     );
     isa_ok($proc, 'JSORB::Procedure');
@@ -49,7 +48,7 @@ sub foo { 'FOO' . (shift) };
     is($proc->name, 'foo', '... got the right name');
     ok(!$proc->has_parent, '... this proc doesnt have a parent');
     is_deeply($proc->fully_qualified_name, ['foo'], '... got the full name');
-    is($proc->body, \&foo, '... got the right body');
+    is($proc->body, \&::foo, '... got the right body');
 
     ok($proc->has_spec, '... got a spec for this proc');
     

@@ -5,12 +5,23 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Core::Element';
-   with 'JSORB::Core::Roles::HasSpec';
+   with 'JSORB::Core::Roles::HasSpec',
+        'MooseX::Traits';
 
 has 'body' => (
-    is       => 'ro',
-    isa      => 'CodeRef',   
-    required => 1,
+    is      => 'ro',
+    isa     => 'CodeRef',   
+    lazy    => 1,
+    default => sub {
+        my $self      = shift;
+        my @full_name = @{ $self->fully_qualified_name };
+        my $sub_name  = pop @full_name;
+        my $pkg_name  = join '::' => @full_name;
+        my $meta      = Class::MOP::Class->initialize($pkg_name || 'main');
+        $meta->has_package_symbol({ name => $sub_name, sigil => '&', type => 'CODE' })
+            || confess "Could not find $sub_name in package " . $meta->name;
+        $meta->get_package_symbol({ name => $sub_name, sigil => '&', type => 'CODE' })
+    }
 );      
 
 sub call {

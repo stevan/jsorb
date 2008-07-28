@@ -12,7 +12,7 @@ extends 'JSORB::Namespace';
 
 has 'procedures' => (
     is      => 'ro',
-    isa     => 'ArrayRef[JSORB::Procedure | JSORB::Method]',   
+    isa     => 'ArrayRef[JSORB::Procedure]',   
     default => sub { [] },
     trigger => sub {
         my $self = shift;
@@ -24,7 +24,7 @@ has 'procedures' => (
 has '_procedure_map' => (
     metaclass => 'Collection::Hash',
     is        => 'ro',
-    isa       => 'HashRef[JSORB::Procedure | JSORB::Method]', 
+    isa       => 'HashRef[JSORB::Procedure]', 
     lazy      => 1,  
     default   => sub {
         my $self = shift;

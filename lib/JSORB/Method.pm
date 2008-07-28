@@ -4,8 +4,7 @@ use Moose;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'JSORB::Core::Element';
-   with 'JSORB::Core::Roles::HasSpec';
+extends 'JSORB::Procedure';
 
 has 'class_name' => (
     is      => 'ro',
@@ -34,14 +33,12 @@ sub call {
                  . $self->class_name 
                  . " not $invocant";
     
-    $self->check_parameter_spec(@args)
-        if $self->has_spec;
+    $self->check_parameter_spec(@args);
     
     my $method = $self->method_name;
     my @result = ($invocant->$method(@args));
     
-    $self->check_return_value_spec(@result)
-        if $self->has_spec;
+    $self->check_return_value_spec(@result);
     
     $result[0];
 }

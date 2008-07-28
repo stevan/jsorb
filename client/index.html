@@ -1,6 +1,8 @@
 <html>
 <head>
 <script language="javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.js"></script>
+<script language="javascript" src="http://www.json.org/json2.js"></script>
+<script language="javascript" src="JSORB.js"></script>
 <script language="javascript">
 
 $(document).ready(function () {
@@ -16,12 +18,22 @@ $(document).ready(function () {
 })
 
 function load_test () {
-    var url = $("#url").val();
+    var req = new JSORB.Client.Request ({
+        id     : 1,
+        method : $("#method").val(),
+        params : $("#params").val()        
+    });
+    
     $.get(
-        url,
+        
+        req.as_url('http://localhost:8080/'),
+        
         function (data, text_status) {
+            
+            var resp = new JSORB.Client.Response(data);
+            
             $("#status").val(text_status);
-            $("#output").val(data);            
+            $("#output").val( resp.as_json() );            
         }
     );
 }
@@ -32,7 +44,9 @@ function load_test () {
 <h1>JSORB Testing Client</h1>
 <hr/>
 <form onsubmit="return false;">
-<input type="text" size="82" name="url" id="url" value="http://localhost:8080/" />&nbsp;<input type="submit" value="Go" onclick="load_test()" />
+method:<input type="text" value="" name="method" id="method" /><br/>
+params:<input type="text" value="" name="params" id="params" /><br/>
+<input type="submit" value="Go" onclick="load_test()" />
 </form>
 <hr/>
 <label for="status">status</label><br/>
