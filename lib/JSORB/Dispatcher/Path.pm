@@ -10,42 +10,39 @@ with 'MooseX::Traits';
 
 has 'namespace' => (
     is       => 'ro',
-    isa      => 'JSORB::Namespace',   
+    isa      => 'JSORB::Namespace',
     required => 1,
 );
 
 has 'router' => (
     is      => 'ro',
-    isa     => 'Path::Router',   
+    isa     => 'Path::Router',
     lazy    => 1,
     builder => '_build_router',
 );
 
 sub handler {
-    my ($self, $call) = @_;   
+    my ($self, $call) = @_;
     (blessed $call && $call->isa('JSON::RPC::Common::Procedure::Call'))
         || confess "You must pass a JSON::RPC::Common::Procedure::Call to the handler, not $call";
-    
+
     my $method = $call->method;
     my $match  = $self->router->match($method);
 
     return $call->return_error(
         message => ("Could not find method $method in " . $self->namespace->name)
     ) unless $match;
-    
+
     my $procedure = $match->target;
 
     my $res = eval { $self->call_procedure($procedure, $call) };
     if ($@) {
-        return $call->return_error( 
-            message => "$@", 
-            # FIXME: 
-            # wtf is this code for? 
-            # - SL
-            code => 1 
+        return $call->return_error(
+            message => "$@",
+            code    => 1,
         );
-    } 
-    return $call->return_result($res);    
+    }
+    return $call->return_result($res);
 }
 
 sub call_procedure {
@@ -68,13 +65,13 @@ sub _build_router {
 
 sub _process_elements {
     my ($self, $router, $base_url, $namespace) = @_;
-    
+
     $base_url .= lc($namespace->name) . '/';
-    
+
     foreach my $element (@{ $namespace->elements }) {
         $element->isa('JSORB::Interface')
             ? $self->_process_interface($router, $base_url, $element)
-            : $self->_process_elements($router, $base_url, $element);            
+            : $self->_process_elements($router, $base_url, $element);
     }
 }
 
@@ -82,26 +79,26 @@ sub _process_interface {
     my ($self, $router, $base_url, $interface) = @_;
 
     $base_url .= lc($interface->name) . '/';
-    
+
     # NOTE:
     # perhaps I want to actually do:
     #  $router->add_route(
     #      ($base_url . ':method'),
     #      target => $interface,
-    #  );    
+    #  );
     # instead so that the method becomes
-    # a param and then the interface 
-    # itself is the target ... which 
-    # means I can then hand off the 
-    # rest of the dispatching to the 
+    # a param and then the interface
+    # itself is the target ... which
+    # means I can then hand off the
+    # rest of the dispatching to the
     # interface .. hmmm
-    
+
     foreach my $procedure (@{ $interface->procedures }) {
         $router->add_route(
             ($base_url . lc($procedure->name)),
             target => $procedure
         );
-    }    
+    }
 }
 
 no Moose; 1;
@@ -120,7 +117,7 @@ JSORB::Dispatcher::Path - A Moosey solution to this problem
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+=head1 METHODS
 
 =over 4
 
@@ -130,7 +127,7 @@ JSORB::Dispatcher::Path - A Moosey solution to this problem
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

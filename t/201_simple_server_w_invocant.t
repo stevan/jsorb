@@ -7,6 +7,7 @@ use lib '/Users/stevan/Desktop/JSON-RPC-Common/lib';
 
 use Test::More no_plan => 1;
 use Test::Exception;
+use Test::WWW::Mechanize;
 
 BEGIN {
     use_ok('JSORB');
@@ -61,7 +62,33 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
 my $s = JSORB::Server::Simple->new(dispatcher => $d);
 isa_ok($s, 'JSORB::Server::Simple');
 
-#$s->run;
+my $pid = fork;
+
+unless ($pid) {
+    $s->run;
+    exit();
+}
+else {
+    my $mech = Test::WWW::Mechanize->new;  
+    $mech->get_ok('http://localhost:9999/?method=/app/foo/bar');    
+    $mech->content_contains('"result":"BAR"', '... got the content we expected');
+    
+    $mech->get_ok('http://localhost:9999/?method=/app/foo/baz');    
+    $mech->content_contains('"result":"BAZ"', '... got the content we expected');
+    
+    ok($mech->get('http://localhost:9999/?method=/app/foo/bar&params=[2,0]'), '... the content with an error');  
+    is($mech->status, 500, '... got the HTTP error we expected');  
+    $mech->content_contains('"error":{"message":"Bad number of arguments', '... got the content we expected');    
+}
+
+END {
+    kill TERM => $pid; 
+}
+
+
+
+
+
 
 
 

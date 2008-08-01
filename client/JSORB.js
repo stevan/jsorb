@@ -1,4 +1,15 @@
 
+/*
+
+JSORB.js
+
+This requires the standard JSON 
+library, which can be found here:
+
+http://www.json.org/json2.js
+
+*/
+
 var JSORB        = function () {}
     JSORB.Client = function () {}
 
@@ -8,6 +19,10 @@ JSORB.Client.Request = function (p) {
     if (typeof p == 'string') {
         p = JSON.parse(p);
     }
+    // FIXME:
+    // This should probably check 
+    // for bad input here, and 
+    // throw an exception - SL
     this.id     = p['id'] || null;    
     this.method = p['method'];    
     this.params = p['params'] && typeof p['params'] == 'string'
@@ -42,6 +57,10 @@ JSORB.Client.Response = function (p) {
     if (typeof p == 'string') {
         p = JSON.parse(p);
     }
+    // FIXME:
+    // This should probably check 
+    // for bad input here, and 
+    // throw an exception - SL
     this.id     = p['id'];    
     this.result = p['result'] || null;
     this.error  = p['error']  || null;

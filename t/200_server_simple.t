@@ -7,6 +7,7 @@ use lib '/Users/stevan/Desktop/JSON-RPC-Common/lib';
 
 use Test::More no_plan => 1;
 use Test::Exception;
+use Test::WWW::Mechanize;
 
 BEGIN {
     use_ok('JSORB');
@@ -57,7 +58,39 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
 my $s = JSORB::Server::Simple->new(dispatcher => $d);
 isa_ok($s, 'JSORB::Server::Simple');
 
-#$s->run;
+my $pid = fork;
+
+unless ($pid) {
+    $s->run;
+    exit();
+}
+else {
+    my $mech = Test::WWW::Mechanize->new;  
+    $mech->get_ok('http://localhost:9999/?method=/math/simple/add&params=[2,2]');    
+    $mech->content_is('{"jsonrpc":"2.0","result":4}', '... got the content we expected');
+    
+    $mech->get_ok('http://localhost:9999/?method=/math/simple/sub&params=[4,2]');    
+    $mech->content_is('{"jsonrpc":"2.0","result":2}', '... got the content we expected');    
+    
+    $mech->get_ok('http://localhost:9999/?method=/math/simple/mul&params=[2,2]');    
+    $mech->content_is('{"jsonrpc":"2.0","result":4}', '... got the content we expected');    
+    
+    $mech->get_ok('http://localhost:9999/?method=/math/simple/div&params=[10,2]');    
+    $mech->content_is('{"jsonrpc":"2.0","result":5}', '... got the content we expected');    
+    
+    ok($mech->get('http://localhost:9999/?method=/math/simple/div&params=[2,0]'), '... the content with an error');  
+    is($mech->status, 500, '... got the HTTP error we expected');  
+    $mech->content_contains('"error":{"message":"Illegal division by zero', '... got the content we expected');    
+    
+    ok($mech->get('http://localhost:9999/?method=/math/simple/add&params=[2]'), '... the content with an error');    
+    is($mech->status, 500, '... got the HTTP error we expected');
+    $mech->content_contains('"error":{"message":"Bad number of arguments', '... got the content we expected');    
+}
+
+END {
+    kill TERM => $pid; 
+}
+
 
 
 

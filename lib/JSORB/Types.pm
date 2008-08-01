@@ -5,7 +5,7 @@ use Moose::Util::TypeConstraints;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-# ... for JSORB::Core::Roles::HasSpec ....
+# ... for JSORB::Procedure ....
 
 type 'Unit' => where { () };
 

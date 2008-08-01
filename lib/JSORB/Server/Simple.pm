@@ -13,10 +13,15 @@ has 'dispatcher' => (
     required => 1,
 );
 
+has 'port' => (
+    is      => 'ro',
+    isa     => 'Int',   
+    default => sub { 9999 },
+);
+
 has 'request_marshaler' => (
     is      => 'ro',
     isa     => 'JSON::RPC::Common::Marshal::HTTP',   
-    lazy    => 1,
     default => sub { JSON::RPC::Common::Marshal::HTTP->new },
 );
 
@@ -31,7 +36,7 @@ has 'server_engine' => (
                  module => 'ServerSimple',
                  args   => {
                      host => 'localhost',
-                     port =>  8080,
+                     port => $self->port,
                  },
                  request_handler => $self->handler,
              },
@@ -50,23 +55,31 @@ has 'handler' => (
         my $d    = $self->dispatcher;        
         return sub {
             my $c = shift;
-            #use Data::Dumper;   
-            #warn(('-' x 80) . "\n");
             eval {
                 my $call = $m->request_to_call($c->req);
-                #warn "REQUEST: " . Dumper( $call ) . "\n";                
                 my $response = $d->handler($call);
-                #warn "RESPONSE: " . Dumper( $response ) . "\n";                
                 $m->write_result_to_response($response, $c->res);
             };
             if ($@) {
-                #warn "ERROR: " . Dumper( $@ ) . "\n";                                
+                # NOTE:
+                # should this return a JSONRPC error?
+                # or is the standard HTTP Error okay?
+                # - SL
                 $c->res->status(500);
                 $c->res->body($@);
             }    
         }        
     },
 );
+
+# NOTE:
+# we need to initialize the server
+# engine so that it can be run 
+# after a fork() such as in our 
+# tests. Otherwise the laziness
+# messes things up.
+# -SL
+sub BUILD { (shift)->server_engine }
 
 no Moose; 1;
 
