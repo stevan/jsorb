@@ -2,7 +2,7 @@
 <head>
 <script language="javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.js"></script>
 <script language="javascript" src="http://www.json.org/json2.js"></script>
-<script language="javascript" src="JSORB.js"></script>
+<script language="javascript" src="../client/JSORB.js"></script>
 <script language="javascript">
 
 $(document).ready(function () {
@@ -23,14 +23,12 @@ function load_test () {
         method : $("#method").val(),
         params : $("#params").val()        
     });
-    
     $.get(
-        
         req.as_url('http://localhost:9999/'),
-        
         function (data, text_status) {
-            var resp = new JSORB.Client.Response(data);
             $("#status").val(text_status);
+            
+            var resp = new JSORB.Client.Response(data);
             $("#output").val(resp.as_json());            
         }
     );
