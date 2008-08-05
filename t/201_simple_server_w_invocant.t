@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use lib '/Users/stevan/Desktop/JSON-RPC-Common/lib';
-
 use Test::More no_plan => 1;
 use Test::Exception;
 use Test::WWW::Mechanize;
@@ -78,7 +76,8 @@ else {
     
     ok($mech->get('http://localhost:9999/?method=/app/foo/bar&params=[2,0]'), '... the content with an error');  
     is($mech->status, 500, '... got the HTTP error we expected');  
-    $mech->content_contains('"error":{"message":"Bad number of arguments', '... got the content we expected');    
+    $mech->content_contains('"error":', '... got the content we expected');    
+    $mech->content_contains('"Bad number of arguments', '... got the content we expected');    
 }
 
 END {

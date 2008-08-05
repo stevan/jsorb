@@ -14,7 +14,9 @@ has 'class_name' => (
         my $self = shift;
         ($self->has_parent)
             || confess "Class name is required, no parent to derive it froms";
-        $self->parent->name 
+        my @full_name = @{ $self->fully_qualified_name };
+        pop @full_name; # discard the sub name 
+        return join '::' => @full_name; 
     }
 );
 
