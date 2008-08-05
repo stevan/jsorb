@@ -31,8 +31,32 @@ my $index;
     ];
     my $loader = Forest::Tree::Loader::SimpleUIDLoader->new;
     $loader->load($data);
-    $index = Forest::Tree::Indexer::SimpleUIDIndexer->new(tree => $loader->tree);
+    $index     = Forest::Tree::Indexer::SimpleUIDIndexer->new(tree => $loader->tree);
     $index->build_index;
+}
+
+sub decompose_tree {
+    my ($tree) = @_;
+    (blessed $tree && $tree->isa('Forest::Tree'))
+        || Carp::confess "You must pass in a tree, not $tree";
+    return +{
+        uid          => $tree->uid,
+        parent       => ($tree->is_root ? undef : $tree->parent->uid),
+        node         => $tree->node,
+        children     => [
+            map {
+                +{
+                    uid  => $_->uid,
+                    node => $_->node,
+                }
+            } @{ $tree->children }
+        ]
+    };
+}
+
+sub get_tree_at {
+    my ($uid) = @_;
+    decompose_tree($index->get_tree_at($uid));
 }
 
 my $ns = JSORB::Namespace->new(
@@ -42,17 +66,13 @@ my $ns = JSORB::Namespace->new(
             name       => 'Tree',
             procedures => [
                 JSORB::Procedure->new(
+                    name  => 'get_root_tree',
+                    body  => sub { decompose_tree($index->get_root) },
+                    spec  => [ 'Unit' => 'HashRef' ]
+                ),           
+                JSORB::Procedure->new(
                     name  => 'get_tree_at',
-                    body  => sub {
-                        my ($uid) = @_;
-                        my $tree = $index->get_tree_at($uid);
-                        return +{
-                            uid          => $tree->uid,
-                            parent       => $tree->parent->uid,
-                            node         => $tree->node,
-                            has_children => ($tree->child_count ? 1 : 0),
-                        };
-                    },
+                    body  => \&get_tree_at,
                     spec  => [ 'Int' => 'HashRef' ],
                 ),
             ]
