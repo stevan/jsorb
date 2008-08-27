@@ -28,10 +28,11 @@ my $index;
         { node => '4.0',   uid => 8,  parent_uid => 0 },
         { node => '4.1',   uid => 9,  parent_uid => 8 },
         { node => '4.1.1', uid => 10, parent_uid => 9 },
+        { node => '4.1.2', uid => 11, parent_uid => 9 },        
     ];
     my $loader = Forest::Tree::Loader::SimpleUIDLoader->new;
     $loader->load($data);
-    $index     = Forest::Tree::Indexer::SimpleUIDIndexer->new(tree => $loader->tree);
+    $index = Forest::Tree::Indexer::SimpleUIDIndexer->new(tree => $loader->tree);
     $index->build_index;
 }
 
@@ -40,10 +41,10 @@ sub decompose_tree {
     (blessed $tree && $tree->isa('Forest::Tree'))
         || Carp::confess "You must pass in a tree, not $tree";
     return +{
-        uid          => $tree->uid,
-        parent       => ($tree->is_root ? undef : $tree->parent->uid),
-        node         => $tree->node,
-        children     => [
+        uid      => $tree->uid,
+        parent   => ($tree->is_root ? undef : $tree->parent->uid),
+        node     => $tree->node,
+        children => [
             map {
                 +{
                     uid  => $_->uid,
@@ -58,6 +59,23 @@ sub get_tree_at {
     my ($uid) = @_;
     decompose_tree($index->get_tree_at($uid));
 }
+
+=pod
+
+my $ns = namespace Forest => as {
+    
+    interface Tree => as {
+        
+        procedure get_root_tree => [ 'Unit' => 'HashRef' ] => sub {
+            decompose_tree($index->get_root)
+        };
+        
+        procedure get_tree_at => [ 'Int' => 'HashRef' ] => \&get_tree_at;
+    };
+    
+};
+
+=cut
 
 my $ns = JSORB::Namespace->new(
     name     => 'Forest',

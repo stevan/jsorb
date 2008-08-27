@@ -1,26 +1,26 @@
 <html>
 <head>
-<script language="javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.js"></script>
-<script language="javascript" src="http://www.json.org/json2.js"></script>
+<script language="javascript" src="js/jquery.js"></script>
+<script language="javascript" src="js/JSON.js"></script>
 <script language="javascript" src="../client/JSORB.js"></script>
 <script language="javascript">
 
 function draw_node (c) {
-    return '<li id="node_' 
+    return '<li id="node_'
          + c.uid
-         + '"><a href="javascript:load_subtree(' 
-         + c.uid 
-         + ')">' 
-         + c.node 
-         + '</a><ul id="children_' 
+         + '"><a href="javascript:load_subtree('
          + c.uid
-         + '"></ul></li>';    
+         + ')">'
+         + c.node
+         + '</a><ul id="children_'
+         + c.uid
+         + '"></ul></li>';
 }
 
 $(document).ready(function () {
    get_root_tree(function (t) {
        var out = '';
-       $.each(t.children, function (i, c) { out += draw_node(c) });       
+       $.each(t.children, function (i, c) { out += draw_node(c) });
        $('#tree').html(out);
    });
 })
@@ -32,36 +32,28 @@ function load_subtree (uid, node) {
     else {
         get_tree_at(uid, function (t) {
             var out = '';
-            $.each(t.children, function (i, c) { out += draw_node(c) });       
-            $('#children_' + uid).html(out);        
+            $.each(t.children, function (i, c) { out += draw_node(c) });
+            $('#children_' + uid).html(out);
         });
     }
 }
 
+var c = new JSORB.Client ('http://localhost:9999/');
+
 function get_root_tree (callback) {
-    var req = new JSORB.Client.Request ({
-        method : "/forest/tree/get_root_tree"         
-    });
-    $.get(
-        req.as_url('http://localhost:9999/'),
-        function (data) {
-            var resp = new JSORB.Client.Response(data);
-            callback(resp.result)
-        }
+    c.call(
+        { method: "/forest/tree/get_root_tree" },
+        callback
     );
 }
 
 function get_tree_at (uid, callback) {
-    var req = new JSORB.Client.Request ({
-        method : "/forest/tree/get_tree_at",
-        params : [ uid ]         
-    });
-    $.get(
-        req.as_url('http://localhost:9999/'),
-        function (data) {
-            var resp = new JSORB.Client.Response(data);
-            callback(resp.result)
-        }
+    c.call(
+        {
+            method : "/forest/tree/get_tree_at",
+            params : [ uid ]
+        },
+        callback
     );
 }
 

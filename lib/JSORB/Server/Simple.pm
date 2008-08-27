@@ -13,6 +13,12 @@ has 'dispatcher' => (
     required => 1,
 );
 
+has 'host' => (
+    is      => 'ro',
+    isa     => 'Str',   
+    default => sub { 'localhost' },
+);
+
 has 'port' => (
     is      => 'ro',
     isa     => 'Int',   
@@ -35,7 +41,7 @@ has 'server_engine' => (
              interface => {
                  module => 'ServerSimple',
                  args   => {
-                     host => 'localhost',
+                     host => $self->host,
                      port => $self->port,
                  },
                  request_handler => $self->handler,

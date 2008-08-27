@@ -8,10 +8,43 @@ library, which can be found here:
 
 http://www.json.org/json2.js
 
+And a copy of the JQuery library 
+which can be found here:
+
+http://jqueryjs.googlecode.com/files/jquery-1.2.6.js
+
 */
 
 var JSORB        = function () {}
-    JSORB.Client = function () {}
+
+JSORB.Client = function (base_url) {
+    this.base_url = base_url;
+}
+
+JSORB.Client.prototype.new_request = function (p) {
+    return new JSORB.Client.Request(p); 
+}
+
+JSORB.Client.prototype.call = function (request, callback, error_handler) {
+    if (error_handler == undefined) {
+        error_handler = function (e) { alert(e) };
+    }
+    if (typeof request == 'object' && request.constructor != JSORB.Client.Request) {
+        request = this.new_request(request);
+    }
+    JQuery.get(
+        request.as_url(this.base_url),
+        function (data) {
+            var resp = new JSORB.Client.Response(data);
+            if (resp.is_error()) {
+                error_handler(resp.error);
+            }
+            else {
+                callback(resp.result);                
+            }
+        }
+    );    
+}
 
 // Request
 
