@@ -22,32 +22,41 @@ has 'router' => (
 );
 
 sub handler {
-    my ($self, $call) = @_;
+    my ($self, $call, @args) = @_;
     (blessed $call && $call->isa('JSON::RPC::Common::Procedure::Call'))
         || confess "You must pass a JSON::RPC::Common::Procedure::Call to the handler, not $call";
 
-    my $method = $call->method;
-    my $match  = $self->router->match($method);
+    my $procedure = $self->get_procedure_from_call($call);
+    
+    return $self->throw_error(
+        $call, "Could not find method " . $call->method . " in " . $self->namespace->name
+    ) unless defined $procedure;
 
-    return $call->return_error(
-        message => ("Could not find method $method in " . $self->namespace->name)
-    ) unless $match;
-
-    my $procedure = $match->target;
-
-    my $res = eval { $self->call_procedure($procedure, $call) };
+    my $res = eval { $self->call_procedure($procedure, $call, @args) };
     if ($@) {
-        return $call->return_error(
-            message => "$@",
-            code    => 1,
-        );
+        return $self->throw_error($call, "$@");
     }
     return $call->return_result($res);
+}
+
+sub get_procedure_from_call {
+    my ($self, $call) = @_;
+    my $match = $self->router->match($call->method);
+    return unless $match;
+    return $match->target;    
 }
 
 sub call_procedure {
     my ($self, $procedure, $call) = @_;
     $procedure->call( $call->params_list );
+}
+
+sub throw_error {
+    my ($self, $call, $message) = @_;
+    return $call->return_error(
+        message => $message,
+        code    => 1,
+    );    
 }
 
 # ........
