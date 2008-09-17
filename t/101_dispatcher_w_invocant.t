@@ -5,12 +5,12 @@ use warnings;
 
 use Test::More no_plan => 1;
 use Test::Exception;
-use Test::WWW::Mechanize;
+
+use JSON::RPC::Common::Procedure::Call;
 
 BEGIN {
     use_ok('JSORB');
     use_ok('JSORB::Dispatcher::Path');
-    use_ok('JSORB::Server::Simple');
 }
 
 {
@@ -57,37 +57,35 @@ my $d = JSORB::Dispatcher::Path->new_with_traits(
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
 
-my $s = JSORB::Server::Simple->new(dispatcher => $d);
-isa_ok($s, 'JSORB::Server::Simple');
-
-my $pid = fork;
-
-unless ($pid) {
-    $s->run;
-    exit();
-}
-else {
-    my $mech = Test::WWW::Mechanize->new;  
-    $mech->get_ok('http://localhost:9999/?method=/app/foo/bar');    
-    $mech->content_contains('"result":"BAR"', '... got the content we expected');
+{
+    my $call = JSON::RPC::Common::Procedure::Call->new(
+        method => "/app/foo/bar",
+        params => [],
+    );
     
-    $mech->get_ok('http://localhost:9999/?method=/app/foo/baz');    
-    $mech->content_contains('"result":"BAZ"', '... got the content we expected');
+    my $res = $d->handler($call);
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok($res->has_result, '... we have a result, not an error');
+    ok(!$res->has_error, '... we have a result, not an error');
+
+    is($res->result, 'BAR', '... got the result we expected');
+}
+
+{
+    my $call = JSON::RPC::Common::Procedure::Call->new(
+        method => "/app/foo/baz",
+        params => [],
+    );
     
-    ok($mech->get('http://localhost:9999/?method=/app/foo/bar&params=[2,0]'), '... the content with an error');  
-    is($mech->status, 500, '... got the HTTP error we expected');  
-    $mech->content_contains('"error":', '... got the content we expected');    
-    $mech->content_contains('"Bad number of arguments', '... got the content we expected');    
+    my $res = $d->handler($call);
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok($res->has_result, '... we have a result, not an error');
+    ok(!$res->has_error, '... we have a result, not an error');
+
+    is($res->result, 'BAZ', '... got the result we expected');
 }
-
-END {
-    kill TERM => $pid; 
-}
-
-
-
-
-
 
 
 

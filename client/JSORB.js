@@ -32,7 +32,7 @@ JSORB.Client.prototype.call = function (request, callback, error_handler) {
     if (typeof request == 'object' && request.constructor != JSORB.Client.Request) {
         request = this.new_request(request);
     }
-    JQuery.get(
+    jQuery.get(
         request.as_url(this.base_url),
         function (data) {
             var resp = new JSORB.Client.Response(data);

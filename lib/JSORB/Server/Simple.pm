@@ -60,20 +60,22 @@ has 'handler' => (
         my $m    = $self->request_marshaler;
         my $d    = $self->dispatcher;        
         return sub {
-            my $c = shift;
+            my $request  = shift;
+            my $response = HTTP::Engine::Response->new;
             eval {
-                my $call = $m->request_to_call($c->req);
-                my $response = $d->handler($call);
-                $m->write_result_to_response($response, $c->res);
+                my $call     = $m->request_to_call($request);
+                my $result   = $d->handler($call);
+                $m->write_result_to_response($result, $response);
             };
             if ($@) {
                 # NOTE:
                 # should this return a JSONRPC error?
                 # or is the standard HTTP Error okay?
                 # - SL
-                $c->res->status(500);
-                $c->res->body($@);
+                $response->status(500);
+                $response->body($@);
             }    
+            return $response;
         }        
     },
 );
