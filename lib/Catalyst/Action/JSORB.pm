@@ -14,11 +14,10 @@ sub execute {
     my ($controller, $c) = @_;
     $self->NEXT::execute(@_); 
     
-    my $dispatcher = $c->config->{JSORB}->{dispatcher};
+    # try local, but if none exists, use global
+    my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
     
-    (blessed $dispatcher 
-     && $dispatcher->isa('JSORB::Dispatcher::Path')
-     && $dispatcher->does('JSORB::Dispatcher::Traits::WithContext'))
+    (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst'))
         || confess "Bad dispatcher - $dispatcher";   
     
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;

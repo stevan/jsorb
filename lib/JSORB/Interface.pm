@@ -18,7 +18,9 @@ has 'procedures' => (
         my $self = shift;
         $_->_set_parent($self)
             foreach @{ $self->procedures };
-    }    
+        $self->_clear_procedure_map
+            if $self->_procedure_map_is_initialized;
+    }
 );
 
 has '_procedure_map' => (
@@ -26,6 +28,8 @@ has '_procedure_map' => (
     is        => 'ro',
     isa       => 'HashRef[JSORB::Procedure]', 
     lazy      => 1,  
+    predicate => '_procedure_map_is_initialized',
+    clearer   => '_clear_procedure_map',
     default   => sub {
         my $self = shift;
         return +{
@@ -36,6 +40,15 @@ has '_procedure_map' => (
         'get' => 'get_procedure_by_name',
     }
 );
+
+sub add_procedure {
+    my ($self, $procedure) = @_;
+    (blessed $procedure && $procedure->isa('JSORB::Procedure'))
+        || confess "Bad procedure -> $procedure";
+    push @{ $self->procedures } => $procedure;
+    $procedure->_set_parent($self);
+    $self->_procedure_map->{ $procedure->name } = $procedure;
+}
 
 no Moose; 1;
 

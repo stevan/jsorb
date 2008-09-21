@@ -15,6 +15,8 @@ has 'elements' => (
         my $self = shift;
         $_->_set_parent($self)
             foreach @{ $self->elements };
+        $self->_clear_element_map
+            if $self->_element_map_is_initialized;
     }
 );
 
@@ -23,7 +25,9 @@ has '_element_map' => (
     init_arg  => undef,    
     is        => 'ro',
     isa       => 'HashRef[JSORB::Namespace]', 
-    lazy      => 1,  
+    lazy      => 1, 
+    predicate => '_element_map_is_initialized',
+    clearer   => '_clear_element_map', 
     default   => sub {
         my $self = shift;
         return +{
