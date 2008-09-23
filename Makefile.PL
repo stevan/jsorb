@@ -17,5 +17,4 @@ requires 'HTTP::Engine'             => 0;
 # for Catalyst::Action::JSORB
 requires 'Catalyst'                 => 0;
 
-auto_install;
 WriteAll;
