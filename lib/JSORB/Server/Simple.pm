@@ -61,6 +61,27 @@ has 'handler' => (
         my $d    = $self->dispatcher;        
         return sub {
             my $request  = shift;
+
+            warn "Got Request " . $request->request_uri;
+            
+            # NOTE:
+            # this is just in here so I can 
+            # test my example, it will be 
+            # removed once I have debugged 
+            # enough (stupid FireFox and
+            # its AJAX security) 
+            # - SL
+            if ($request->path eq '/test' && $ENV{JSORB_DEBUG} == 1) {
+                
+                use Path::Class::File;
+                use FindBin;
+                
+                return HTTP::Engine::Response->new(
+                    status => 200,
+                    body   => Path::Class::File->new($FindBin::Bin, 'index.html')->open
+                );                               
+            }
+            
             my $response = HTTP::Engine::Response->new;
             eval {
                 my $call     = $m->request_to_call($request);

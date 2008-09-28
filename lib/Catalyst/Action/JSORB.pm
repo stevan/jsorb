@@ -17,7 +17,10 @@ sub execute {
     # try local, but if none exists, use global
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
     
-    (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst'))
+    $dispatcher = $self->_inflate_dispatcher($dispatcher, $controller)
+        unless blessed $dispatcher;
+    
+    ($dispatcher->isa('JSORB::Dispatcher::Catalyst'))
         || confess "Bad dispatcher - $dispatcher";   
     
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;
@@ -25,6 +28,42 @@ sub execute {
     my $result    = $dispatcher->handler($call, $c);
     
     $marshaler->write_result_to_response($result, $c->response);    
+}
+
+sub _inflate_dispatcher {
+    my ($self, $config, $controller) = @_;
+    
+    my ($package, $procs) = %$config;
+    
+    my $dispatcher = JSORB::Dispatcher::Catalyst->new(
+        namespace => $self->_create_namespace(
+            sub {
+                map {
+                    JSORB::Procedure->new( name => $_, %{ $procs->{$_} } )
+                } keys %$procs                 
+            },
+            (split '::' => $package)
+        )
+    );    
+    
+    return $dispatcher;
+}
+
+sub _create_namespace {
+    my ($self, $callback, @namespace) = @_;
+    my $name = shift @namespace;    
+    if (@namespace) {
+        JSORB::Namespace->new(
+            name     => $name,
+            elements => [ $self->_create_namespace($callback, @namespace) ]
+        )        
+    }
+    else {
+        JSORB::Interface->new(
+            name       => $name,
+            procedures => [ $callback->() ]
+        )        
+    }
 }
 
 no Moose; 1;

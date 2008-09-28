@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use FindBin;
+use Scalar::Util 'blessed';
 
 use lib "$FindBin::Bin/../lib";
 
@@ -39,7 +40,7 @@ my $index;
 sub decompose_tree {
     my ($tree) = @_;
     (blessed $tree && $tree->isa('Forest::Tree'))
-        || Carp::confess "You must pass in a tree, not $tree";
+        || Carp::croak "You must pass in a tree, not $tree";
     return +{
         uid      => $tree->uid,
         parent   => ($tree->is_root ? undef : $tree->parent->uid),
@@ -59,23 +60,6 @@ sub get_tree_at {
     my ($uid) = @_;
     decompose_tree($index->get_tree_at($uid));
 }
-
-=pod
-
-my $ns = namespace Forest => as {
-    
-    interface Tree => as {
-        
-        procedure get_root_tree => [ 'Unit' => 'HashRef' ] => sub {
-            decompose_tree($index->get_root)
-        };
-        
-        procedure get_tree_at => [ 'Int' => 'HashRef' ] => \&get_tree_at;
-    };
-    
-};
-
-=cut
 
 my $ns = JSORB::Namespace->new(
     name     => 'Forest',
