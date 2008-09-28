@@ -8,6 +8,8 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';
 
+# has '+_trait_namespace' => ( default => 'JSORB::Dispatcher::Traits' );
+
 has 'namespace' => (
     is       => 'ro',
     isa      => 'JSORB::Namespace',

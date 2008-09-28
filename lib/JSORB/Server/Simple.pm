@@ -7,6 +7,10 @@ use JSON::RPC::Common::Marshal::HTTP;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+with 'MooseX::Traits';
+
+# has '+_trait_namespace' => ( default => 'JSORB::Server::Traits' );
+
 has 'dispatcher' => (
     is       => 'ro',
     isa      => 'JSORB::Dispatcher::Path',   
@@ -55,51 +59,32 @@ has 'handler' => (
     is      => 'ro',
     isa     => 'CodeRef',   
     lazy    => 1,
-    default => sub {
-        my $self = shift;
-        my $m    = $self->request_marshaler;
-        my $d    = $self->dispatcher;        
-        return sub {
-            my $request  = shift;
-
-            warn "Got Request " . $request->request_uri;
-            
-            # NOTE:
-            # this is just in here so I can 
-            # test my example, it will be 
-            # removed once I have debugged 
-            # enough (stupid FireFox and
-            # its AJAX security) 
-            # - SL
-            if ($request->path eq '/test' && $ENV{JSORB_DEBUG} == 1) {
-                
-                use Path::Class::File;
-                use FindBin;
-                
-                return HTTP::Engine::Response->new(
-                    status => 200,
-                    body   => Path::Class::File->new($FindBin::Bin, 'index.html')->open
-                );                               
-            }
-            
-            my $response = HTTP::Engine::Response->new;
-            eval {
-                my $call     = $m->request_to_call($request);
-                my $result   = $d->handler($call);
-                $m->write_result_to_response($result, $response);
-            };
-            if ($@) {
-                # NOTE:
-                # should this return a JSONRPC error?
-                # or is the standard HTTP Error okay?
-                # - SL
-                $response->status(500);
-                $response->body($@);
-            }    
-            return $response;
-        }        
-    },
+    builder => 'build_handler',
 );
+
+sub build_handler {
+    my $self = shift;
+    my $m    = $self->request_marshaler;
+    my $d    = $self->dispatcher;        
+    return sub {
+        my $request  = shift;
+        my $response = HTTP::Engine::Response->new;
+        eval {
+            my $call     = $m->request_to_call($request);
+            my $result   = $d->handler($call);
+            $m->write_result_to_response($result, $response);
+        };
+        if ($@) {
+            # NOTE:
+            # should this return a JSONRPC error?
+            # or is the standard HTTP Error okay?
+            # - SL
+            $response->status(500);
+            $response->body($@);
+        }    
+        return $response;
+    }        
+}
 
 # NOTE:
 # we need to initialize the server

@@ -10,6 +10,7 @@ use lib "$FindBin::Bin/../lib";
 use JSORB;
 use JSORB::Dispatcher::Path;
 use JSORB::Server::Simple;
+use JSORB::Server::Traits::WithStaticFiles;
 
 use Forest;
 use Forest::Tree;
@@ -82,7 +83,12 @@ my $ns = JSORB::Namespace->new(
     ]
 );
 
-JSORB::Server::Simple->new(
+JSORB::Server::Simple->new_with_traits(
+    traits     => [     
+        'JSORB::Server::Traits::WithDebug',            
+        'JSORB::Server::Traits::WithStaticFiles',
+    ],
+    doc_root   => [ $FindBin::Bin, '..' ],
     dispatcher => JSORB::Dispatcher::Path->new(
         namespace => $ns,
     )

@@ -74,7 +74,6 @@ JSORB.Client.prototype.call = function (request, callback, error_handler) {
     };
 
     options.success  = function (data, status) {
-        alert(status);
         var resp = new JSORB.Client.Response(data);
         if (resp.is_error()) {
             error_handler(resp.error);
@@ -130,13 +129,9 @@ JSORB.Client.Request.prototype.as_json = function () {
 // Response
 
 JSORB.Client.Response = function (p) {
-    alert(p);
     if (typeof p == 'string') {
-        try {
         p = JSON.parse(p);
-        } catch (e) { alert(e.message) }
     }
-    if (p == undefined) alert("WTF??");
     // FIXME:
     // This should probably check
     // for bad input here, and
