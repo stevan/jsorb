@@ -2,6 +2,7 @@ package JSORB::Server::Traits::WithDebug;
 use Moose::Role;
 
 use Text::SimpleTable;
+use JSON ();
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
@@ -14,15 +15,28 @@ around 'build_handler' => sub {
         my $request = shift;
     
         my $t = Text::SimpleTable->new(15, 55);
-        $t->row('Method',      $request->method);        
-        $t->row('Request URI', $request->request_uri);        
+        $t->row('Request', $request->request_uri);        
+        $t->row('Method',  $request->method);                
         
         my $t2 = Text::SimpleTable->new([ 15, 'Parameter' ], [ 55, 'Value' ]);        
         $t2->row($_, $request->param($_)) for sort $request->param;        
         
         warn $t->draw, "\n", $t2->draw, "\n";
         
-        $handler->($request);
+        my $response = $handler->($request);
+        
+        my $t3 = Text::SimpleTable->new(15, 55);        
+        $t3->row(
+            'Response' => JSON->new->pretty(1)->encode(
+                JSON->new->decode(
+                    $response->body
+                )
+            )
+        );
+        
+        warn $t3->draw, "\n";
+        
+        return $response;
     }
 };
 

@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use Scalar::Util 'blessed';
 
-use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../../lib";
 
 use JSORB;
 use JSORB::Dispatcher::Path;
@@ -30,7 +30,7 @@ my $index;
         { node => '4.0',   uid => 8,  parent_uid => 0 },
         { node => '4.1',   uid => 9,  parent_uid => 8 },
         { node => '4.1.1', uid => 10, parent_uid => 9 },
-        { node => '4.1.2', uid => 11, parent_uid => 9 },        
+        { node => '4.1.2', uid => 11, parent_uid => 9 },
     ];
     my $loader = Forest::Tree::Loader::SimpleUIDLoader->new;
     $loader->load($data);
@@ -72,7 +72,7 @@ my $ns = JSORB::Namespace->new(
                     name  => 'get_root_tree',
                     body  => sub { decompose_tree($index->get_root) },
                     spec  => [ 'Unit' => 'HashRef' ]
-                ),           
+                ),
                 JSORB::Procedure->new(
                     name  => 'get_tree_at',
                     body  => \&get_tree_at,
@@ -84,11 +84,11 @@ my $ns = JSORB::Namespace->new(
 );
 
 JSORB::Server::Simple->new_with_traits(
-    traits     => [     
-        'JSORB::Server::Traits::WithDebug',            
+    traits     => [
+        'JSORB::Server::Traits::WithDebug',
         'JSORB::Server::Traits::WithStaticFiles',
     ],
-    doc_root   => [ $FindBin::Bin, '..' ],
+    doc_root   => [ $FindBin::Bin, '..', '..' ],
     dispatcher => JSORB::Dispatcher::Path->new(
         namespace => $ns,
     )

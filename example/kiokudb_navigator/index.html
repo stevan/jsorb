@@ -1,0 +1,52 @@
+<html>
+<head>
+<script language="javascript" src="../js/jquery-1.2.6.js"></script>
+<script language="javascript" src="../js/json2.js"></script>
+<script language="javascript" src="../../client/JSORB.js"></script>
+<script language="javascript">
+
+var c = new JSORB.Client ('http://localhost:9999/');
+
+function lookup (id, callback) {
+    c.call(
+        { method : "/kiokudb/navigator/lookup", params : [ id ] },
+        callback
+    );
+}
+
+$(document).ready(function () {
+    load_object( $('#root'), '' )
+});
+
+function load_object (container, id) {
+    lookup(id, function (obj) {
+        var out = '';
+        
+        for (var prop in obj) {
+            if (typeof obj[prop] == 'object') {
+                out += '<li>' + prop + ' : <a id="' + obj[prop]['$ref'] + '" class="loader" href="#">load</a><ul></ul></li>';                
+            }
+            else {
+                out += '<li>' + prop + ' : ' + obj[prop] + '</li>';
+            }
+        }
+        
+        $(container).html(out);
+        
+        $('.loader', container).click(function () {
+            var id = $(this).attr('id');
+            load_object( $(this).siblings('ul'), id );
+        })
+    });    
+}
+
+
+</script>
+</head>
+<body>
+<h1>JSORB Object Test</h1>
+<hr/>
+<ul id="root">
+</ul>
+</body>
+</html>
