@@ -1,0 +1,50 @@
+
+body {
+    font-family: sans-serif;
+    background : #B7D244;
+}
+
+#root {
+    padding-left : 0px;      
+    border-left  : 25px solid #82AF59;
+}
+
+ul {
+    list-style    : none;
+    border-top    : 3px solid #99AACC;
+    background    : #D6EC72;
+}
+
+li {
+    border     : 3px solid #336699;
+    background : white;
+}
+
+.label {
+    float        : left;
+    width        : 150px;
+    padding-left : 2px;
+}
+
+.collection {
+    border-top    : 3px solid #C09A60;
+    background    : #F5DE6E;    
+}
+
+.value a {
+    text-decoration : none;
+    color           : #336699;
+}
+
+.value {
+
+}
+
+.value ul {
+    clear : both;
+}
+
+.hidden {    
+    display : none;
+}
+
