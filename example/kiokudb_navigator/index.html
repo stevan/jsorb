@@ -6,11 +6,14 @@
 <script language="javascript" src="../../client/JSORB.js"></script>
 <script language="javascript">
 
-var c = new JSORB.Client ('http://localhost:9999/');
+var c = new JSORB.Client ({
+    base_url       : 'http://localhost:9999/', 
+    base_namespace : '/kiokudb/navigator/' 
+});
 
 function lookup (id, callback) {
     c.call(
-        { method : "/kiokudb/navigator/lookup", params : [ id ] },
+        { method : 'lookup', params : [ id ] }, 
         callback
     );
 }
@@ -19,7 +22,7 @@ $(document).ready(function () {
     load_object( $('#root'), '' )
 });
 
-function create_object_link (ref_id, label) {
+function create_object_link (ref_id, label) {    
     return '<a id="' + ref_id + '" class="loader" href="#">' + label + '</a><ul class="hidden"></ul>';
 }
 
