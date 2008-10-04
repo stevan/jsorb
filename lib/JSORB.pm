@@ -26,6 +26,7 @@ JSORB - A Moosey solution to this problem
   use JSORB;
   
   JSORB::Server::Simple->new(
+      port       => 8080,
       dispatcher => JSORB::Dispatcher::Path->new(
           namespace => JSORB::Namespace->new(
               name     => 'Math',
@@ -44,8 +45,30 @@ JSORB - A Moosey solution to this problem
           )
       )
   )->run;
+  
+  
+  var c = new JSORB.Client ({
+      base_url : 'http://localhost:8080/',
+  })
+  
+  c.call({
+      method : '/math/simple/add',
+      params : [ 2, 2 ]
+  }, function (response) {
+      alert(response.result)
+  });
 
 =head1 DESCRIPTION
+
+                                         __
+          __                            /\ \
+         /\_\      ____    ___    _ __  \ \ \____
+         \/\ \    /',__\  / __`\ /\`'__\ \ \ '__`\
+          \ \ \  /\__, `\/\ \L\ \\ \ \/   \ \ \L\ \
+          _\ \ \ \/\____/\ \____/ \ \_\    \ \_,__/
+         /\ \_\ \ \/___/  \/___/   \/_/     \/___/
+         \ \____/
+          \/___/
 
 =head1 METHODS 
 
