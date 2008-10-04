@@ -10,10 +10,12 @@ has 'invocant' => (
     required => 1,
 );
 
-sub call_procedure {
-    my ($self, $procedure, $call) = @_;
-    $procedure->call( $self->invocant, $call->params_list );
-}
+around 'assemble_params_list' => sub {
+    my $next = shift;
+    my $self = shift;
+    return ($self->invocant, $self->$next( @_ ));    
+};
+
 
 no Moose::Role; 1;
 

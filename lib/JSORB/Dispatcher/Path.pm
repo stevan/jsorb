@@ -49,8 +49,13 @@ sub get_procedure_from_call {
 }
 
 sub call_procedure {
-    my ($self, $procedure, $call) = @_;
-    $procedure->call( $call->params_list );
+    my ($self, $procedure, $call, @args) = @_;
+    $procedure->call( $self->assemble_params_list( $call, @args ) );
+}
+
+sub assemble_params_list {
+    my ($self, $call, @args) = @_;
+    return $call->params_list;    
 }
 
 sub throw_error {

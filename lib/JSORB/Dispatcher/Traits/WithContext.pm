@@ -10,13 +10,14 @@ has 'context_class' => (
     predicate => 'has_context_class'
 );
 
-sub call_procedure {
-    my ($self, $procedure, $call, $context) = @_;
+around 'assemble_params_list' => sub {
+    my $next = shift;
+    my ($self, $call, $context) = @_;
     (blessed $context && $context->isa($self->context_class))
         || confess "Expected a context of type (" . $self->context_class . ") but got ($context)"
-            if $self->has_context_class;
-    $procedure->call( $context, $call->params_list );
-}
+            if $self->has_context_class;    
+    return ($context, $self->$next($call, $context));    
+};
 
 no Moose::Role; 1;
 
