@@ -17,12 +17,15 @@ sub execute {
     # try local, but if none exists, use global
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
     
-    ($dispatcher->isa('JSORB::Dispatcher::Catalyst'))
+    (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Path'))
         || confess "Bad dispatcher - $dispatcher";   
     
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;
     my $call      = $marshaler->request_to_call($c->request);    
-    my $result    = $dispatcher->handler($call, $c);
+    my $result    = $dispatcher->handler(
+        $call, 
+        ($dispatcher->isa('JSORB::Dispatcher::Catalyst') ? $c : ())
+    );
     
     $marshaler->write_result_to_response($result, $c->response);    
 }

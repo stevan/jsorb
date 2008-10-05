@@ -3,7 +3,7 @@ package TestApp;
 use strict;
 use warnings;
 
-use Catalyst;
+use Catalyst; #'-Debug';
 
 use JSORB;
 use JSORB::Dispatcher::Catalyst;
