@@ -9,9 +9,15 @@ BEGIN { extends 'Catalyst::Controller' };
     package Test::App;
     use Moose;
     
+    has 'greeting_prefix' => (
+        is      => 'ro',
+        isa     => 'Str',   
+        default => sub { 'Yo!' },
+    );
+    
     sub foo {
         my ($self, $c, $who) = @_;
-        return "Yo! What's up $who";    
+        return $self->greeting_prefix . " What's up $who";    
     }
 }
 
@@ -35,6 +41,16 @@ __PACKAGE__->config(
         )
     )    
 );
+
+sub ACCEPT_CONTEXT {
+    my ($self, $c, $args) = @_;
+    $self->config->{'Action::JSORB'}->invocant(
+        Test::App->new(
+            greeting_prefix => $c->req->param('greeting_prefix') 
+        )
+    ) if $c->req->param('greeting_prefix');
+    $self;
+}
 
 sub rpc : Local : ActionClass(JSORB) {}
 

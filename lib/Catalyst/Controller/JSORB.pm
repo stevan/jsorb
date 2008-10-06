@@ -6,23 +6,38 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Catalyst::Controller';
 
-sub COMPONENT {
-    my ($self, $c, $args) = @_;
-    
-    if (my $method = $self->can('setup_jsorb_dispatcher')) {
-        
-        confess "Action:JSORB is already configured for this controller ($self)" 
-            if exists $self->config->{'Action::JSORB'};
-            
-        my $dispatcher = $self->$method($c, $args);
-        
+sub ACCEPT_CONTEXT {
+    my ($self, $c, @args) = @_;
+
+    if (not exists $self->config->{'Action::JSORB'}) {
+
+        my $method = $self->can('setup_jsorb_dispatcher');
+
+        (defined $method)
+            || confess "No JSORB Dispatcher found.";
+
+        my $dispatcher = $self->$method($c, @args);
+
         (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Path'))
-             || confess "Bad dispatcher - $dispatcher";        
-        
+             || confess "Bad dispatcher - $dispatcher";
+
         $self->config->{'Action::JSORB'} = $dispatcher;
     }
     
-    $self->next::method($c, $args);
+    if (my $method = $self->can('create_dynamic_invocant')) {
+        
+        ($self->config->{'Action::JSORB'}->does('JSORB::Dispatcher::Traits::WithDynamicInvocant'))
+            || confess "Your dispatcher must do the JSORB::Dispatcher::Traits::WithDynamicInvocant role";
+        
+        my $invocant = $self->$method($c, @args);
+        
+        (defined $invocant)
+            || confess "Invocant creation controlled";
+        
+        $self->config->{'Action::JSORB'}->invocant($invocant);
+    }
+
+    $self;
 }
 
 no Moose; 1;
@@ -41,7 +56,7 @@ Catalyst::Controller::JSORB - A Moosey solution to this problem
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+=head1 METHODS
 
 =over 4
 
@@ -51,7 +66,7 @@ Catalyst::Controller::JSORB - A Moosey solution to this problem
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

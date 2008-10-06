@@ -10,16 +10,34 @@ BEGIN { extends 'Catalyst::Controller::JSORB' };
     package Another::Test::App;
     use Moose;
     
-    has 'place' => (is => 'ro', isa => 'Str');
+    has 'count' => (
+        is      => 'ro',
+        isa     => 'Int',   
+    );
     
-    sub foo { "It's the end of the " . (shift)->place }
+    has 'place' => (
+        is      => 'ro',
+        isa     => 'Str',   
+        default => sub { 'World' },
+    );
+    
+    sub foo { 
+        my $self = shift;
+        "It's the end of the " . $self->place . "(" . $self->count . ")" 
+    }
+}
+
+my $counter = 0;
+
+sub create_dynamic_invocant {
+    my ($self, $c) = @_;
+    Another::Test::App->new(count => $counter++);
 }
 
 sub setup_jsorb_dispatcher {
     my ($self, $c) = @_;
     return JSORB::Dispatcher::Path->new_with_traits(
-        traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
-        invocant  => Another::Test::App->new(place => $c->config->{'who'}),
+        traits    => [ 'JSORB::Dispatcher::Traits::WithDynamicInvocant' ],
         namespace => JSORB::Namespace->new(
             name     => 'Another', 
             elements => [

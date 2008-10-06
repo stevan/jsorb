@@ -5,7 +5,7 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Dispatcher::Catalyst';
-   with 'JSORB::Dispatcher::Traits::WithInvocant';
+   with 'JSORB::Dispatcher::Traits::WithDynamicInvocant';
 
 no Moose; 1;
 
