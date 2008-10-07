@@ -39,6 +39,15 @@ has '_element_map' => (
     }
 );
 
+sub add_element {
+    my ($self, $element) = @_;
+    (blessed $element && $element->isa('JSORB::Namespace'))
+        || confess "Bad element -> $element";
+    push @{ $self->elements } => $element;
+    $element->_set_parent($self);
+    $self->_element_map->{ $element->name } = $element;
+}
+
 no Moose; 1;
 
 __END__

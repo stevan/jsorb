@@ -13,14 +13,22 @@ with 'MooseX::Traits';
 has 'namespace' => (
     is       => 'ro',
     isa      => 'JSORB::Namespace',
-    required => 1,
+    trigger  => sub {
+        my $self = shift;
+        $self->_clear_router if $self->_has_router;
+        # the router will get 
+        # initialized the next 
+        # time it is needed
+    }
 );
 
 has 'router' => (
-    is      => 'ro',
-    isa     => 'Path::Router',
-    lazy    => 1,
-    builder => '_build_router',
+    is        => 'ro',
+    isa       => 'Path::Router',
+    lazy      => 1,
+    builder   => '_build_router',
+    clearer   => '_clear_router',
+    predicate => '_has_router',    
 );
 
 sub handler {

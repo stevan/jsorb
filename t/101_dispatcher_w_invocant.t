@@ -53,7 +53,6 @@ isa_ok($ns, 'JSORB::Namespace');
 my $d = JSORB::Dispatcher::Path->new_with_traits(
     traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
     namespace => $ns,
-    invocant  => App::Foo->new
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
 
@@ -63,7 +62,7 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
         params => [],
     );
     
-    my $res = $d->handler($call);
+    my $res = $d->handler($call, App::Foo->new);
     isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
 
     ok($res->has_result, '... we have a result, not an error');
@@ -78,7 +77,7 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
         params => [],
     );
     
-    my $res = $d->handler($call);
+    my $res = $d->handler($call, App::Foo->new);
     isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
 
     ok($res->has_result, '... we have a result, not an error');

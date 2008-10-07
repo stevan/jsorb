@@ -53,7 +53,6 @@ isa_ok($ns, 'JSORB::Namespace');
 my $d = JSORB::Dispatcher::Path->new_with_traits(
     traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
     namespace => $ns,
-    invocant  => App::Foo->new
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
 

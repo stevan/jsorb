@@ -4,18 +4,11 @@ use Moose::Role;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-has 'invocant' => (
-    is       => 'ro',
-    isa      => 'Object',   
-    required => 1,
-);
-
 around 'assemble_params_list' => sub {
     my $next = shift;
-    my $self = shift;
-    return ($self->invocant, $self->$next( @_ ));    
+    my ($self, $call, $invocant, @args) = @_;
+    return ($invocant, $self->$next( $call, @args ));    
 };
-
 
 no Moose::Role; 1;
 

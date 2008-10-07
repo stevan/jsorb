@@ -12,11 +12,11 @@ has 'context_class' => (
 
 around 'assemble_params_list' => sub {
     my $next = shift;
-    my ($self, $call, $context) = @_;
+    my ($self, $call, $context, @args) = @_;
     (blessed $context && $context->isa($self->context_class))
         || confess "Expected a context of type (" . $self->context_class . ") but got ($context)"
             if $self->has_context_class;    
-    return ($context, $self->$next($call, $context));    
+    return ($context, $self->$next( $call, @args ));    
 };
 
 no Moose::Role; 1;
