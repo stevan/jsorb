@@ -4,8 +4,26 @@ use Moose;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'JSORB::Dispatcher::Catalyst';
-   with 'JSORB::Dispatcher::Traits::WithDynamicInvocant';
+extends 'JSORB::Dispatcher::Path';
+   with 'JSORB::Dispatcher::Traits::WithInvocantFactory';
+
+has 'constructor_arg_generators' => (
+    is      => 'ro',
+    isa     => 'HashRef[CodeRef]',   
+    default => sub { {} },
+);
+
+sub prepare_handler_args {
+    my ($self, $call, $c) = @_;
+    
+    my $procedure = $self->get_procedure_from_call($call);
+    return unless defined $procedure;
+    
+    my $constructor_generator = $self->constructor_arg_generators->{ $procedure->class_name };
+    return unless defined $constructor_generator;
+    
+    return $constructor_generator->($c);
+}
 
 no Moose; 1;
 

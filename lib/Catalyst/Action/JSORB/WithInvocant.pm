@@ -1,4 +1,4 @@
-package Catalyst::Action::JSORB;
+package Catalyst::Action::JSORB::WithInvocant;
 use Moose;
 
 our $VERSION   = '0.01';
@@ -13,17 +13,20 @@ sub execute {
     my $self = shift;
     my ($controller, $c) = @_;
     
-    $self->NEXT::execute(@_); 
+    $self->NEXT::execute(@_);
     
     # try local, but if none exists, use global
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
     
-    (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst'))
+    (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst::WithInvocant'))
         || confess "Bad dispatcher - $dispatcher";   
     
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;
     my $call      = $marshaler->request_to_call($c->request);    
-    my $result    = $dispatcher->handler($call, $c);
+    my $result    = $dispatcher->handler(
+        $call, 
+        $dispatcher->prepare_handler_args($call, $c)
+    );
     
     $marshaler->write_result_to_response($result, $c->response);    
 }
@@ -36,7 +39,7 @@ __END__
 
 =head1 NAME
 
-Catalyst::Action::JSORB - A Moosey solution to this problem
+Catalyst::Action::JSORB::WithInvocant - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 

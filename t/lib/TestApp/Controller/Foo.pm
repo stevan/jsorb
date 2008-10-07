@@ -16,14 +16,41 @@ BEGIN { extends 'Catalyst::Controller' };
     );
     
     sub foo {
-        my ($self, $c, $who) = @_;
+        my ($self, $who) = @_;
         return $self->greeting_prefix . " What's up $who";    
     }
+    
+    package Test::App::Foo;
+    use Moose;
+    
+    has 'counter' => (
+        is      => 'ro',
+        isa     => 'Int',   
+    );
+    
+    sub bar { 'FOO::BAR(' . (shift)->counter . ')' }    
 }
+
+my $COUNTER = 1;
 
 __PACKAGE__->config(
     'Action::JSORB' => JSORB::Dispatcher::Catalyst::WithInvocant->new(
-        invocant      => Test::App->new,
+        constructor_arg_generators => {
+            'Test::App' => sub {
+                my ($c) = @_;
+                return (
+                    $c->req->param('greeting_prefix')
+                        ? (greeting_prefix => $c->req->param('greeting_prefix'))
+                        : ()
+                );
+            },
+            'Test::App::Foo' => sub {
+                my ($c) = @_;
+                return (
+                    counter => $COUNTER++
+                );
+            }            
+        },
         namespace     => JSORB::Namespace->new(
             name     => 'Test',
             elements => [
@@ -33,8 +60,19 @@ __PACKAGE__->config(
                         JSORB::Method->new(
                             name        => 'greeting',
                             method_name => 'foo',
-                            spec        => [ 'Catalyst' => 'Str' => 'Str' ],
+                            spec        => [ 'Str' => 'Str' ],
                         ),    
+                    ],
+                    elements => [
+                        JSORB::Interface->new(
+                            name       => 'Foo',            
+                            procedures => [
+                                JSORB::Method->new(
+                                    name        => 'bar',
+                                    spec        => [ 'Unit' => 'Str' ],
+                                ),    
+                            ]
+                        )                    
                     ]
                 )            
             ]
@@ -42,17 +80,7 @@ __PACKAGE__->config(
     )    
 );
 
-sub ACCEPT_CONTEXT {
-    my ($self, $c, $args) = @_;
-    $self->config->{'Action::JSORB'}->invocant(
-        Test::App->new(
-            greeting_prefix => $c->req->param('greeting_prefix') 
-        )
-    ) if $c->req->param('greeting_prefix');
-    $self;
-}
-
-sub rpc : Local : ActionClass(JSORB) {}
+sub rpc : Local : ActionClass(JSORB::WithInvocant) {}
 
 
 1;

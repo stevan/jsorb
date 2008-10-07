@@ -6,7 +6,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 25;
+use Test::More tests => 30;
 use Catalyst::Test 'TestApp';
 
 {
@@ -21,6 +21,7 @@ use Catalyst::Test 'TestApp';
        
     is($response->content, '{"jsonrpc":"2.0","result":"Hello World"}', '... got the content we expected');
 }
+
 
 {
     my $request = HTTP::Request->new( 
@@ -48,9 +49,9 @@ use Catalyst::Test 'TestApp';
     is($response->content, '{"jsonrpc":"2.0","result":"Hey! What\'s up Man"}', '... got the content we expected');
 }
 
-{
+foreach my $i (1 .. 3) {
     my $request = HTTP::Request->new( 
-        GET => 'http://localhost:3000/bar/rpc?method=/another/test/app/greeting&params=[]' 
+        GET => 'http://localhost:3000/foo/rpc?method=/test/app/foo/bar&params=[]' 
     );
 
     ok(my $response = request($request), '... got a response from the request');
@@ -58,20 +59,6 @@ use Catalyst::Test 'TestApp';
     is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
     is($response->code, 200, '.. response code is 200');
        
-    is($response->content, '{"jsonrpc":"2.0","result":"It\'s the end of the World(4)"}', '... got the content we expected');
+    is($response->content, '{"jsonrpc":"2.0","result":"FOO::BAR(' . $i . ')"}', '... got the content we expected');
 }
-
-{
-    my $request = HTTP::Request->new( 
-        GET => 'http://localhost:3000/bar/rpc?method=/another/test/app/greeting&params=[]' 
-    );
-
-    ok(my $response = request($request), '... got a response from the request');
-    ok($response->is_success, '... response is successful');
-    is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
-    is($response->code, 200, '.. response code is 200');
-       
-    is($response->content, '{"jsonrpc":"2.0","result":"It\'s the end of the World(10)"}', '... got the content we expected');
-}
-
 

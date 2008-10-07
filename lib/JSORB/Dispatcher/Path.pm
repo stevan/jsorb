@@ -93,9 +93,9 @@ sub _process_elements {
     $base_url .= lc($namespace->name) . '/';
 
     foreach my $element (@{ $namespace->elements }) {
-        $element->isa('JSORB::Interface')
-            ? $self->_process_interface($router, $base_url, $element)
-            : $self->_process_elements($router, $base_url, $element);
+        $self->_process_interface($router, $base_url, $element)
+            if $element->isa('JSORB::Interface');
+        $self->_process_elements($router, $base_url, $element);
     }
 }
 
