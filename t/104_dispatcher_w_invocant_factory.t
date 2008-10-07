@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 20;
 use Test::Exception;
 
 use JSON::RPC::Common::Procedure::Call;
@@ -51,7 +51,7 @@ my $ns = JSORB::Namespace->new(
 isa_ok($ns, 'JSORB::Namespace');
 
 my $d = JSORB::Dispatcher::Path->new_with_traits(
-    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
+    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocantFactory' ],
     namespace => $ns,
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
@@ -62,7 +62,7 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
         params => [],
     );
     
-    my $res = $d->handler($call, App::Foo->new);
+    my $res = $d->handler($call);
     isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
 
     ok($res->has_result, '... we have a result, not an error');
@@ -77,7 +77,7 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
         params => [],
     );
     
-    my $res = $d->handler($call, App::Foo->new);
+    my $res = $d->handler($call);
     isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
 
     ok($res->has_result, '... we have a result, not an error');
@@ -86,5 +86,34 @@ isa_ok($d, 'JSORB::Dispatcher::Path');
     is($res->result, 'BAZ', '... got the result we expected');
 }
 
+{
+    my $call = JSON::RPC::Common::Procedure::Call->new(
+        method => "/app/foo/bar",
+        params => [],
+    );
+    
+    my $res = $d->handler($call, bar => 'This is a BAR');
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok($res->has_result, '... we have a result, not an error');
+    ok(!$res->has_error, '... we have a result, not an error');
+
+    is($res->result, 'This is a BAR', '... got the result we expected');
+}
+
+{
+    my $call = JSON::RPC::Common::Procedure::Call->new(
+        method => "/app/foo/baz",
+        params => [],
+    );
+    
+    my $res = $d->handler($call, baz => 'This is a BAZ');
+    isa_ok($res, 'JSON::RPC::Common::Procedure::Return');
+
+    ok($res->has_result, '... we have a result, not an error');
+    ok(!$res->has_error, '... we have a result, not an error');
+
+    is($res->result, 'This is a BAZ', '... got the result we expected');
+}
 
 

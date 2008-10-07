@@ -1,20 +1,19 @@
-package JSORB::Dispatcher::Traits::WithInvocant;
+package JSORB::Dispatcher::Traits::WithInvocantFactory;
 use Moose::Role;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-before 'call_procedure' => sub {
-    my ($self, $procedure) = @_;
-    ($procedure->isa('JSORB::Method'))
-        || confess "Procedure must be a JSORB::Method, not a $procedure";    
-};
+with 'JSORB::Dispatcher::Traits::WithInvocant';
 
-around 'assemble_params_list' => sub {
-    my $next = shift;
-    my ($self, $call, $invocant, @args) = @_;
-    return ($invocant, $self->$next( $call, @args ));    
-};
+sub call_procedure {
+    my ($self, $procedure, $call, @args) = @_;
+    
+    my $class_name = $procedure->class_name;
+    my $invocant   = $class_name->new( @args );
+    
+    $procedure->call( $self->assemble_params_list( $call, $invocant ) );
+}
 
 no Moose::Role; 1;
 
@@ -24,11 +23,11 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Traits::WithInvocant - A Moosey solution to this problem
+JSORB::Dispatcher::Traits::WithInvocantFactory - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use JSORB::Dispatcher::Traits::WithInvocant;
+  use JSORB::Dispatcher::Traits::WithInvocantFactory;
 
 =head1 DESCRIPTION
 

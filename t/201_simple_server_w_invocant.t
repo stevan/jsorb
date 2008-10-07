@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More no_plan => 1;
+use Test::More tests => 14;
 use Test::Exception;
 use Test::WWW::Mechanize;
 
@@ -51,7 +51,7 @@ my $ns = JSORB::Namespace->new(
 isa_ok($ns, 'JSORB::Namespace');
 
 my $d = JSORB::Dispatcher::Path->new_with_traits(
-    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
+    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocantFactory' ],
     namespace => $ns,
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
