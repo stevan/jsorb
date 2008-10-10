@@ -51,16 +51,12 @@ my $ns = JSORB::Namespace->new(
 isa_ok($ns, 'JSORB::Namespace');
 
 my $d = JSORB::Dispatcher::Path->new_with_traits(
-    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
+    traits    => [ 'JSORB::Dispatcher::Traits::WithInvocantFactory' ],
     namespace => $ns,
 );
 isa_ok($d, 'JSORB::Dispatcher::Path');
 
-my $s = JSORB::Server::Simple->new_with_traits(
-    traits     => [ 'JSORB::Server::Traits::WithInvocant' ],
-    dispatcher => $d,
-    invocant   => App::Foo->new(bar => 'Bar', baz => 'Baz')
-);
+my $s = JSORB::Server::Simple->new(dispatcher => $d);
 isa_ok($s, 'JSORB::Server::Simple');
 
 my $pid = fork;
@@ -72,10 +68,10 @@ unless ($pid) {
 else {
     my $mech = Test::WWW::Mechanize->new;  
     $mech->get_ok('http://localhost:9999/?method=/app/foo/bar');    
-    $mech->content_contains('"result":"Bar"', '... got the content we expected');
+    $mech->content_contains('"result":"BAR"', '... got the content we expected');
     
     $mech->get_ok('http://localhost:9999/?method=/app/foo/baz');    
-    $mech->content_contains('"result":"Baz"', '... got the content we expected');
+    $mech->content_contains('"result":"BAZ"', '... got the content we expected');
     
     ok($mech->get('http://localhost:9999/?method=/app/foo/bar&params=[2,0]'), '... the content with an error');  
     is($mech->status, 500, '... got the HTTP error we expected');  

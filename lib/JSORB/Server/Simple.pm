@@ -62,6 +62,8 @@ has 'handler' => (
     builder => 'build_handler',
 );
 
+sub prepare_handler_args { () }
+
 sub build_handler {
     my $self = shift;
     my $m    = $self->request_marshaler;
@@ -71,7 +73,10 @@ sub build_handler {
         my $response = HTTP::Engine::Response->new;
         eval {
             my $call     = $m->request_to_call($request);
-            my $result   = $d->handler($call);
+            my $result   = $d->handler(
+                $call,
+                $self->prepare_handler_args($call, $request)
+            );
             $m->write_result_to_response($result, $response);
         };
         if ($@) {

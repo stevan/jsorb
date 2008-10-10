@@ -172,8 +172,8 @@ JSORB.Client.Response = function (p) {
     // This should probably check
     // for bad input here, and
     // throw an exception - SL
-    this.id     = p['id']     || null;
-    this.result = p['result'] || null;
+    this.id     = p['id'];
+    this.result = p['result'];
     this.error  = p['error'] ? new JSORB.Client.Error(p['error']) : null;
 }
 
