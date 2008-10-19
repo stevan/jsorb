@@ -95,9 +95,11 @@ sub check_return_value_spec {
     
     my $rv = $self->return_value_spec;
     
-    (scalar @result == 0)
-        || confess "Return value is Unit but a value was returned @result"
-        if $rv->name eq 'Unit';
+    if ($rv->name eq 'Unit') {
+        (scalar @result == 0)
+            || confess "Return value is Unit but a value was returned @result";
+        return;
+    }
     
     ($rv->check($result[0]))
         || confess "Return value $result[0] did not pass the return value spec, "

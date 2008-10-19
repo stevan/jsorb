@@ -33,8 +33,9 @@ JSORB.Client = function (options) {
     // handler, otherwise it is all up
     // to you.
     // - SL
-    this.ajax_options   = options['ajax_options']   || {};
-    this.base_namespace = options['base_namespace'] || null;    
+    this.ajax_options          = options['ajax_options']          || {};
+    this.base_namespace        = options['base_namespace']        || null;
+    this.default_error_handler = options['default_error_handler'] || function (e) { alert(e.message) };
     this.message_count  = 0;
 
 }
@@ -56,20 +57,20 @@ JSORB.Client.prototype.call = function (request, callback, error_handler) {
     if (request.id == null) {
         request.id = this.message_count++;
     }
-    this.__call(request, callback, error_handler);    
+    this.__call(request, callback, error_handler);
 }
 
 JSORB.Client.prototype.__coerce_request = function (request) {
     if (typeof request == 'object' && request.constructor != JSORB.Client.Request) {
         request = this.new_request(request);
-    }    
+    }
     return request;
 }
 
-JSORB.Client.prototype.__call = function (request, callback, error_handler) {    
+JSORB.Client.prototype.__call = function (request, callback, error_handler) {
 
     if (error_handler == undefined) {
-        error_handler = function (e) { alert(e.message) };
+        error_handler = this.default_error_handler;
     }
 
     if (this.base_namespace) {
@@ -79,7 +80,7 @@ JSORB.Client.prototype.__call = function (request, callback, error_handler) {
     // clone our global options
     var options      = JSORB.Util.shallow_object_copy(this.ajax_options);
     options.url      = request.as_url(this.base_url);
-    options.dataType = 'json';
+    options.dataType = 'text'; // jQuery keeps not liking my JSON, odd - SL
 
     options.error    = function (request, status, error) {
         var resp;
