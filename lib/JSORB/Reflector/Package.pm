@@ -1,23 +1,29 @@
-package JSORB::Reflector::Moose;
+package JSORB::Reflector::Package;
 use Moose;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-has 'metaclass' => (
+has 'introspector' => (
     is       => 'ro',
-    isa      => 'Moose::Meta::Class',   
+    isa      => 'Class::MOP::Package',   
     required => 1,
     handles  => {
-        'class_name' => 'name'
+        'package_name' => 'name'
     }
 );
 
-has 'method_list' => (
+has 'procedure_list' => (
     is      => 'ro',
     isa     => 'ArrayRef[HashRef]',   
     lazy    => 1,
-    builder => 'build_method_list',
+    builder => 'build_procedure_list',
+);
+
+has 'procedure_class_name' => (
+    is      => 'ro',
+    isa     => 'Str',   
+    default => sub { 'JSORB::Procedure' },
 );
 
 has 'namespace' => (
@@ -30,7 +36,7 @@ has 'namespace' => (
 sub build_namespace {
     my $self = shift;
     
-    my @name = split /\:\:/ => $self->class_name;
+    my @name = split /\:\:/ => $self->package_name;
     
     my $root_ns;
     
@@ -52,18 +58,20 @@ sub build_namespace {
         $root_ns = $interface;
     }
     
-    foreach my $method_spec (@{ $self->method_list }) {
+    foreach my $proc_spec (@{ $self->procedure_list }) {
         $interface->add_procedure(
-            JSORB::Method->new( $method_spec )
+            $self->procedure_class_name->new( $proc_spec )
         );
     }
     
     return $root_ns;
 }
 
-sub build_method_list {
+sub build_procedure_list {
     my $self = shift;
-    return [ map { +{ name => $_ } } $self->metaclass->get_method_list ]
+    return [ map { 
+        +{ name => $_ } 
+    } $self->introspector->list_all_package_symbols('CODE') ]
 }
 
 no Moose; 1;
@@ -74,11 +82,11 @@ __END__
 
 =head1 NAME
 
-JSORB::Reflector::Moose - A Moosey solution to this problem
+JSORB::Reflector::Package - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use JSORB::Reflector::Moose;
+  use JSORB::Reflector::Package;
 
 =head1 DESCRIPTION
 

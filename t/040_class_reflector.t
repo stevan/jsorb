@@ -11,7 +11,7 @@ use JSON::RPC::Common::Procedure::Call;
 BEGIN {
     use_ok('JSORB');
     use_ok('JSORB::Dispatcher::Path');
-    use_ok('JSORB::Reflector::Moose');    
+    use_ok('JSORB::Reflector::Class');    
 }
 
 {
@@ -24,8 +24,8 @@ BEGIN {
     );
 }
 
-my $reflector = JSORB::Reflector::Moose->new(metaclass => My::Point->meta);
-isa_ok($reflector, 'JSORB::Reflector::Moose');
+my $reflector = JSORB::Reflector::Class->new(introspector => My::Point->meta);
+isa_ok($reflector, 'JSORB::Reflector::Class');
 
 my $ns = $reflector->namespace;
 isa_ok($ns, 'JSORB::Namespace');
