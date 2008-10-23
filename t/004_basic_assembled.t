@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 36;
+use Test::More tests => 40;
 use Test::Exception;
 use Test::Moose;
 
@@ -70,6 +70,12 @@ lives_ok {
 
     is_deeply($proc->parameter_spec, [ qw[ Int Int ] ], '... got the parameter spec we expected');
     is($proc->return_value_spec, 'Int', '... got the return value spec we expected');
+    
+    my $result;
+    lives_ok {
+        $result = $proc->call(2, 2)
+    } '... call succedded';
+    is($result, 4, '... got the result we expected');
 }
 
 lives_ok {
@@ -93,5 +99,11 @@ lives_ok {
 
     is_deeply($proc->parameter_spec, [ qw[ Int Int ] ], '... got the parameter spec we expected');
     is($proc->return_value_spec, 'Int', '... got the return value spec we expected');
+    
+    my $result;
+    lives_ok {
+        $result = $proc->call(2, 2)
+    } '... call succedded';
+    is($result, 0, '... got the result we expected');
 }
 

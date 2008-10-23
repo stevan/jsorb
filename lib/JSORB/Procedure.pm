@@ -10,7 +10,7 @@ extends 'JSORB::Core::Element';
 
 has 'body' => (
     is      => 'ro',
-    isa     => 'CodeRef',   
+    isa     => 'CodeRef',
     lazy    => 1,
     default => sub {
         my $self      = shift;
@@ -26,14 +26,14 @@ has 'body' => (
 
 has 'spec' => (
     is        => 'ro',
-    isa       => 'JSORB::Spec', 
-    coerce    => 1,  
+    isa       => 'JSORB::Spec',
+    coerce    => 1,
     predicate => 'has_spec',
 );
 
 has 'parameter_spec' => (
     is      => 'ro',
-    isa     => 'JSORB::ParameterSpec',   
+    isa     => 'JSORB::ParameterSpec',
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -45,15 +45,15 @@ has 'parameter_spec' => (
 
 has 'return_value_spec' => (
     is      => 'ro',
-    isa     => 'JSORB::Spec::Type',   
+    isa     => 'JSORB::Spec::Type',
     lazy    => 1,
-    default => sub { 
+    default => sub {
         my $self = shift;
         ($self->has_spec)
             || confess "Cannot derive the parameter spec without an overall spec";
-        $self->spec->[-1] 
+        $self->spec->[-1]
     },
-);     
+);
 
 sub call {
     my ($self, @args) = @_;
@@ -65,42 +65,58 @@ sub call {
 
 sub check_parameter_spec {
     my ($self, @args) = @_;
-    
+
     return unless $self->has_spec;
-    
+
     my @params = @{ $self->parameter_spec };
-    
-    return if scalar @params == 1 && 
-              scalar   @args == 0 && 
-              $params[0]->name eq 'Unit'; 
-    
-    (scalar @params == scalar @args)
-        || confess "Bad number of arguments, got (" 
-                 . scalar @args 
-                 . "), expected (" 
-                 . scalar @params 
-                 . ")"; 
-    
+
+    if (scalar @params == 1 && $params[0]->name eq 'Unit') {
+        (scalar @args == 0)
+            || confess "Bad number of arguments, got ("
+                     . scalar @args
+                     . "), expected ("
+                     . scalar @params
+                     . ")";
+    }
+
+    my $arg_count = 0;
     foreach my $i (0 .. $#args) {
+
+        ($i <= $#params)
+            || confess "Bad number of arguments, got ("
+                     . scalar @args
+                     . "), expected ("
+                     . scalar @params
+                     . ")";
+
         ($params[$i]->check($args[$i]))
             || confess "Parameter at position $i ($args[$i]) did not pass the spec, "
                      . "we expected " . $params[$i]->name;
-    }    
+
+        $arg_count = $i;
+    }
+
+    ($arg_count == $#params)
+        || confess "Bad number of arguments, got ("
+                 . scalar @args
+                 . "), expected ("
+                 . scalar @params
+                 . ")";
 }
 
 sub check_return_value_spec {
     my ($self, @result) = @_;
-    
+
     return unless $self->has_spec;
-    
+
     my $rv = $self->return_value_spec;
-    
+
     if ($rv->name eq 'Unit') {
         (scalar @result == 0)
             || confess "Return value is Unit but a value was returned @result";
         return;
     }
-    
+
     ($rv->check($result[0]))
         || confess "Return value $result[0] did not pass the return value spec, "
                  . "we expected " . $rv->name;
@@ -122,7 +138,7 @@ JSORB::Procedure - A Moosey solution to this problem
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+=head1 METHODS
 
 =over 4
 
@@ -132,7 +148,7 @@ JSORB::Procedure - A Moosey solution to this problem
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

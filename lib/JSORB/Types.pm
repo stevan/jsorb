@@ -52,7 +52,11 @@ subtype 'JSORB::ParameterSpec'
 
 coerce 'JSORB::Spec' 
     => from 'ArrayRef[Str]'
-        => via { +[ map { find_type_constraint($_) } @$_ ] };
+        => via { +[ 
+            map { 
+                Moose::Util::TypeConstraints::find_or_parse_type_constraint($_) 
+            } @$_ 
+        ] };
 
 no Moose; no Moose::Util::TypeConstraints; 1;
 
