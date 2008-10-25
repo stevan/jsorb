@@ -11,6 +11,9 @@ requires 'MooseX::Traits'             => 0;
 requires 'JSON::RPC::Common'          => 0;
 requires 'Path::Router'               => 0;
                                       
+# for the JSORB.js client library
+requires 'JS'                         => 0;
+                                      
 # for JSORB::Server::Simple           
 requires 'HTTP::Engine'               => 0;
 
