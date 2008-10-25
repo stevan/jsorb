@@ -36,7 +36,7 @@ JSORB.Client = function (options) {
     this.ajax_options          = options['ajax_options']          || {};
     this.base_namespace        = options['base_namespace']        || null;
     this.default_error_handler = options['default_error_handler'] || function (e) { alert(e.message) };
-    this.message_count  = 0;
+    this.message_count         = 0;
 
 }
 
@@ -44,6 +44,12 @@ JSORB.Client.prototype.new_request = function (p) {
     return new JSORB.Client.Request(p);
 }
 
+// FIXME:
+// Notification actually doesn't 
+// need a callback, and should 
+// therefore likely be done 
+// syncronously instead.
+// - SL
 JSORB.Client.prototype.notify = function (request, callback, error_handler) {
     request = this.__coerce_request(request);
     if (request.id != null) {
@@ -67,6 +73,10 @@ JSORB.Client.prototype.__coerce_request = function (request) {
     return request;
 }
 
+// NOTE:
+// call should take a HASH and that 
+// hash should be merged into ajax_options
+// - SL
 JSORB.Client.prototype.__call = function (request, callback, error_handler) {
 
     if (error_handler == undefined) {
@@ -78,7 +88,7 @@ JSORB.Client.prototype.__call = function (request, callback, error_handler) {
     }
 
     // clone our global options
-    var options      = JSORB.Util.shallow_object_copy(this.ajax_options);
+    var options      = jQuery.extend({}, this.ajax_options);
     options.url      = request.as_url(this.base_url);
     options.dataType = 'text'; // jQuery keeps not liking my JSON, odd - SL
 
@@ -209,14 +219,6 @@ JSORB.Client.Error.prototype.as_json = function () {
 /****************************** JSORB.Util ******************************/
 
 JSORB.Util = function () {};
-
-JSORB.Util.shallow_object_copy = function (object) {
-    var copy = {};
-    for (var k in object) {
-        copy[k] = object[k];
-    }
-    return copy;
-}
 
 /***********************************************************************/
 

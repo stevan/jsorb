@@ -6,9 +6,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Reflector::Package';
 
-has 'procedure_class_name' => (
-    is      => 'ro',
-    isa     => 'Str',   
+has '+procedure_class_name' => (
     default => sub { 'JSORB::Method' },
 );
 
