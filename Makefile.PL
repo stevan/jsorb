@@ -27,5 +27,12 @@ requires 'Text::SimpleTable'          => 0;
                                       
 # for Catalyst::Action::JSORB         
 requires 'Catalyst'                   => 0;
+
+# for testing
+build_requires 'Test::More'           => 0;
+build_requires 'Test::WWW::Mechanize' => 0;
+
+# for JS testing
+build_requires 'JS::Test::Base'       => 0;
                                       
 WriteAll;
