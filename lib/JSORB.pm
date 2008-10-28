@@ -19,11 +19,15 @@ __END__
 
 =head1 NAME
 
-JSORB - A Moosey solution to this problem
+JSORB - Javascript Object Request Broker
 
 =head1 SYNOPSIS
 
+  # Set up a simple JSORB server
+
   use JSORB;
+  use JSORB::Server::Simple;
+  use JSORB::Dispatcher::Path;
   
   JSORB::Server::Simple->new(
       port       => 8080,
@@ -46,6 +50,13 @@ JSORB - A Moosey solution to this problem
       )
   )->run;
   
+  # go to the URL directly ...
+  http://localhost:8080/?method=/math/simple/add&params=[2,2]  
+  
+  # and get back a response ...
+  {"jsonrpc":"2.0","result":2}
+  
+  # or use the Javascript client library
   
   var c = new JSORB.Client ({
       base_url : 'http://localhost:8080/',
@@ -54,8 +65,8 @@ JSORB - A Moosey solution to this problem
   c.call({
       method : '/math/simple/add',
       params : [ 2, 2 ]
-  }, function (response) {
-      alert(response.result)
+  }, function (result) {
+      alert(result)
   });
 
 =head1 DESCRIPTION
@@ -70,13 +81,22 @@ JSORB - A Moosey solution to this problem
          \ \____/
           \/___/
 
-=head1 METHODS 
+=head2 DISCLAIMER
 
-=over 4
+This is a B<VERY VERY> early release of this module, and while 
+it is quite functional, this module should in no way be seen as 
+complete. You are more then welcome to experiment and play 
+around with this module, but don't come crying to me if it 
+accidently deletes your MP3 collection, kills the neighbors dog 
+and causes the large hadron collider to create a black hole that 
+swallows up all of existence tearing you molecule from molecule 
+along the event horizon for all eternity. 
 
-=item B<>
+=head2 GOAL
 
-=back
+The goal of this module is to provide a cleaner and more formalized 
+way to do AJAX programming using JSON-RPC in the flavor of Object 
+Request Brokers. 
 
 =head1 BUGS
 

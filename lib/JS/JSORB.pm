@@ -14,6 +14,8 @@ __END__
 
 =head1 NAME
 
+JS::JSORB - Javascript client for JSORB
+
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

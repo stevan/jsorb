@@ -6,6 +6,8 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Reflector::Package';
 
+has '+introspector' => (isa => 'Class::MOP::Class');
+
 has '+procedure_class_name' => (
     default => sub { 'JSORB::Method' },
 );

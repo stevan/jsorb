@@ -13,6 +13,8 @@ requires 'Path::Router'               => 0;
                                       
 # for the JSORB.js client library
 requires 'JS'                         => 0;
+requires 'JS::JSON'                   => 0;
+requires 'JS::jQuery'                 => 0;
                                       
 # for JSORB::Server::Simple           
 requires 'HTTP::Engine'               => 0;
