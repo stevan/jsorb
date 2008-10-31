@@ -108,7 +108,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Simple - A Moosey solution to this problem
+JSORB::Server::Simple
 
 =head1 SYNOPSIS
 
@@ -117,12 +117,6 @@ JSORB::Server::Simple - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

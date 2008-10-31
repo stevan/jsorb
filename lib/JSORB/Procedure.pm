@@ -130,7 +130,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Procedure - A Moosey solution to this problem
+JSORB::Procedure
 
 =head1 SYNOPSIS
 
@@ -139,12 +139,6 @@ JSORB::Procedure - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

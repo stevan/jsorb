@@ -20,7 +20,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Catalyst - A Moosey solution to this problem
+JSORB::Dispatcher::Catalyst
 
 =head1 SYNOPSIS
 
@@ -29,12 +29,6 @@ JSORB::Dispatcher::Catalyst - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

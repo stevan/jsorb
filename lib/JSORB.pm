@@ -98,6 +98,18 @@ The goal of this module is to provide a cleaner and more formalized
 way to do AJAX programming using JSON-RPC in the flavor of Object 
 Request Brokers. 
 
+=head2 FUTURE PLANS
+
+Currently this is more focused on RPC calls between Perl on the 
+server side and Javascript on the client side. Eventually we will 
+have a Perl client and possibly some servers written in other 
+languages as well. 
+
+Plans for auto-generation of the Javascript clients is also on 
+my TODO list. These clients will provide a more natural style of
+programming with Javascript objects and reduce the heavy RPC 
+slant of the current usage patterns.
+
 =head1 BUGS
 
 All complex software has bugs lurking in it, and this module is no 

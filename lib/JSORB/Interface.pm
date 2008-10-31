@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Interface - A Moosey solution to this problem
+JSORB::Interface
 
 =head1 SYNOPSIS
 
@@ -67,12 +67,6 @@ JSORB::Interface - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

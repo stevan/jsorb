@@ -56,7 +56,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Namespace - A Moosey solution to this problem
+JSORB::Namespace
 
 =head1 SYNOPSIS
 
@@ -65,12 +65,6 @@ JSORB::Namespace - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

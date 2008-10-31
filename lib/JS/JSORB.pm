@@ -18,6 +18,17 @@ JS::JSORB - Javascript client for JSORB
 
 =head1 SYNOPSIS
 
+  var c = new JSORB.Client ({
+      base_url : 'http://localhost:8080/',
+  })
+  
+  c.call({
+      method : '/math/simple/add',
+      params : [ 2, 2 ]
+  }, function (result) {
+      alert(result)
+  });
+
 =head1 DESCRIPTION
 
 =head1 BUGS

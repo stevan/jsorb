@@ -82,7 +82,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Reflector::Package - A Moosey solution to this problem
+JSORB::Reflector::Package
 
 =head1 SYNOPSIS
 
@@ -91,12 +91,6 @@ JSORB::Reflector::Package - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

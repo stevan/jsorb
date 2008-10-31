@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-Catalyst::Action::JSORB::WithInvocant - A Moosey solution to this problem
+Catalyst::Action::JSORB::WithInvocant - Catalyst Action for JSORB Dispatcher
 
 =head1 SYNOPSIS
 
@@ -47,13 +47,10 @@ Catalyst::Action::JSORB::WithInvocant - A Moosey solution to this problem
 
 =head1 DESCRIPTION
 
+This is very similar to L<Catalyst::Action::JSORB> but with a few extra 
+features to better handle dispatching to object instances. 
+
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

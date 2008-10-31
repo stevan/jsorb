@@ -66,7 +66,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Types - A Moosey solution to this problem
+JSORB::Types - A set of 
 
 =head1 SYNOPSIS
 
@@ -75,12 +75,6 @@ JSORB::Types - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

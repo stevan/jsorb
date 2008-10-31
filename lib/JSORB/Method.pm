@@ -53,7 +53,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Method - A Moosey solution to this problem
+JSORB::Method
 
 =head1 SYNOPSIS
 
@@ -62,12 +62,6 @@ JSORB::Method - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

@@ -48,7 +48,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Traits::WithDebug - A Moosey solution to this problem
+JSORB::Server::Traits::WithDebug
 
 =head1 SYNOPSIS
 
@@ -57,12 +57,6 @@ JSORB::Server::Traits::WithDebug - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Reflector::Class - A Moosey solution to this problem
+JSORB::Reflector::Class
 
 =head1 SYNOPSIS
 
@@ -34,12 +34,6 @@ JSORB::Reflector::Class - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

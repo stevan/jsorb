@@ -24,7 +24,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Traits::WithInvocant - A Moosey solution to this problem
+JSORB::Dispatcher::Traits::WithInvocant
 
 =head1 SYNOPSIS
 
@@ -33,12 +33,6 @@ JSORB::Dispatcher::Traits::WithInvocant - A Moosey solution to this problem
 =head1 DESCRIPTION
 
 =head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 
