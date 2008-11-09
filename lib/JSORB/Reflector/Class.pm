@@ -14,7 +14,13 @@ has '+procedure_class_name' => (
 
 sub build_procedure_list {
     my $self = shift;
-    return [ map { +{ name => $_ } } $self->introspector->get_method_list ]
+    return [ 
+        map { 
+            $_->package_name eq 'Moose::Object'
+                ? ()
+                : +{ name => $_->name } 
+        } $self->introspector->get_all_methods
+    ]
 }
 
 no Moose; 1;
@@ -32,6 +38,13 @@ JSORB::Reflector::Class
   use JSORB::Reflector::Class;
 
 =head1 DESCRIPTION
+
+=head2 NOTE ABOUT REFLECTION
+
+The automated reflector will B<NOT> reflect methods in L<Moose::Object>. 
+This is because this rarely makes sense for it to do so. If you have a 
+particular use case in which this does make sense, then you are free to 
+specifically request the method by building the procedure list yourself.
 
 =head1 METHODS 
 
