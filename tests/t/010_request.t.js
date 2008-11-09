@@ -2,7 +2,7 @@
 
 var t = new Test.JSORB();
 
-t.plan(21);
+t.plan(24);
 
 // test simple request
 (function() {
@@ -11,6 +11,8 @@ t.plan(21);
         method : 'test',
         params : []
     });
+
+    t.is(req.constructor, JSORB.Client.Request, '... this is-a Client.Request');
 
     t.is(req.id, 1, '... got the expected ID');
     t.is(req.method, 'test', '... got the expected method');
@@ -39,6 +41,8 @@ t.plan(21);
         params : [1, 2, 3]
     });
 
+    t.is(req.constructor, JSORB.Client.Request, '... this is-a Client.Request');
+
     t.is(req.id, null, '... got the expected ID');
     t.is(req.method, 'test', '... got the expected method');
     t.is(req.params.constructor, Array, '... our params is an Array');
@@ -62,6 +66,8 @@ t.plan(21);
 // test request from JSON
 (function() {
     var req = new JSORB.Client.Request ('{"jsonrpc":"2.0","id":1,"method":"test","params":[]}');
+
+    t.is(req.constructor, JSORB.Client.Request, '... this is-a Client.Request');
 
     t.is(req.id, 1, '... got the expected ID');
     t.is(req.method, 'test', '... got the expected method');
