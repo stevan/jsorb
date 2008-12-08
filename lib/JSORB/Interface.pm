@@ -2,6 +2,8 @@ package JSORB::Interface;
 use Moose;
 use MooseX::AttributeHelpers;
 
+use Set::Object 'set';
+
 use JSORB::Procedure;
 use JSORB::Method;
 
@@ -49,6 +51,15 @@ sub add_procedure {
     $procedure->_set_parent($self);
     $self->_procedure_map->{ $procedure->name } = $procedure;
 }
+
+augment 'merge_with' => sub {
+    my ($self, $other) = @_;
+    return 'procedures' => [
+        set( @{ $self->procedures } )->union(
+            set( @{ $other->procedures } )
+        )->members
+    ];
+};
 
 no Moose; 1;
 

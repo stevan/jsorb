@@ -28,25 +28,25 @@ JSORB - Javascript Object Request Broker
   use JSORB;
   use JSORB::Server::Simple;
   use JSORB::Dispatcher::Path;
+  use JSORB::Reflector::Package;
+  
+  {
+      package Math::Simple;
+      use Moose;
+
+      sub add { $_[0] + $_[1] }
+  }
+ 
   
   JSORB::Server::Simple->new(
       port       => 8080,
       dispatcher => JSORB::Dispatcher::Path->new(
-          namespace => JSORB::Namespace->new(
-              name     => 'Math',
-              elements => [
-                  JSORB::Interface->new(
-                      name       => 'Simple',            
-                      procedures => [
-                          JSORB::Procedure->new(
-                              name  => 'add',
-                              body  => sub { $_[0] + $_[0] },
-                              spec  => [ 'Int' => 'Int' => 'Int' ],
-                          )
-                      ]
-                  )            
+          namespace => JSORB::Reflector::Package->new(
+              introspector   => Math::Simple->meta,
+              procedure_list => [
+                  { name => 'add', spec => [ ('Int', 'Int') => 'Int' ] }
               ]
-          )
+          )->namespace
       )
   )->run;
   

@@ -2,6 +2,8 @@ package JSORB::Namespace;
 use Moose;
 use MooseX::AttributeHelpers;
 
+use Set::Object 'set';
+
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
@@ -9,7 +11,7 @@ extends 'JSORB::Core::Element';
 
 has 'elements' => (
     is      => 'ro',
-    isa     => 'ArrayRef[JSORB::Namespace]',   
+    isa     => 'ArrayRef[JSORB::Namespace]',
     default => sub { [] },
     trigger => sub {
         my $self = shift;
@@ -22,12 +24,12 @@ has 'elements' => (
 
 has '_element_map' => (
     metaclass => 'Collection::Hash',
-    init_arg  => undef,    
+    init_arg  => undef,
     is        => 'ro',
-    isa       => 'HashRef[JSORB::Namespace]', 
-    lazy      => 1, 
+    isa       => 'HashRef[JSORB::Namespace]',
+    lazy      => 1,
     predicate => '_element_map_is_initialized',
-    clearer   => '_clear_element_map', 
+    clearer   => '_clear_element_map',
     default   => sub {
         my $self = shift;
         return +{
@@ -48,6 +50,25 @@ sub add_element {
     $self->_element_map->{ $element->name } = $element;
 }
 
+sub merge_with {
+    my ($self, $other) = @_;
+    ($self->name eq $other->name)
+        || confess "You can only merge items with the same name";
+
+    my %other    = %{ $other->_element_map };
+    my @elements = do {
+        map {
+            $_->merge_with( delete $other{ $_->name } || return $_ )
+        } @{ $self->elements }
+    }, values %other;
+
+    $self->meta->name->new(
+        name     => $self->name,
+        elements => \@elements,
+        (inner())
+    );
+}
+
 no Moose; 1;
 
 __END__
@@ -64,11 +85,11 @@ JSORB::Namespace
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+=head1 METHODS
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 
