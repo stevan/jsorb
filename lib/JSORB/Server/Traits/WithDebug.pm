@@ -48,15 +48,22 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Traits::WithDebug
+JSORB::Server::Traits::WithDebug - A debugging trait for JSORB::Server::Simple
 
 =head1 SYNOPSIS
 
-  use JSORB::Server::Traits::WithDebug;
+  JSORB::Server::Simple->new_with_traits(
+      traits     => [ 'JSORB::Server::Traits::WithDebug' ],
+      dispatcher => JSORB::Dispatcher::Path->new(
+          namespace => $ns,
+      )
+  )->run;
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This is a trait meant to be used with L<JSORB::Server::Simple> 
+to aid in debugging. It basically prints out nicely formatted
+ASCII tables to STDERR.
 
 =head1 BUGS
 
@@ -70,7 +77,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

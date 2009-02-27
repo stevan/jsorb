@@ -8,8 +8,6 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';
 
-# has '+_trait_namespace' => ( default => 'JSORB::Dispatcher::Traits' );
-
 has 'namespace' => (
     is       => 'ro',
     isa      => 'JSORB::Namespace',
@@ -125,6 +123,8 @@ sub _process_interface {
     }
 }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -133,15 +133,17 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Path
-
-=head1 SYNOPSIS
-
-  use JSORB::Dispatcher::Path;
+JSORB::Dispatcher::Path - Simple path based dispatcher
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+This module will dispatch RPC methods/procedures that are in a 
+path-like format, such as:
+
+  { method : 'math/simple/add', params : [ 2, 2 ] }
+
+This will look for the C<add> procedure in the C<Math::Simple>
+namespace.
 
 =head1 BUGS
 
@@ -155,7 +157,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

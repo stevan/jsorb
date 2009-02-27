@@ -24,15 +24,13 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Traits::WithInvocant
-
-=head1 SYNOPSIS
-
-  use JSORB::Dispatcher::Traits::WithInvocant;
+JSORB::Dispatcher::Traits::WithInvocant - A dispatcher trait for invocants
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This is a dispatcher trait that expects a object invocant as the 
+first argument. It can only be used with L<JSORB::Method> and not 
+L<JSORB::Procedure>.
 
 =head1 BUGS
 
@@ -46,7 +44,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

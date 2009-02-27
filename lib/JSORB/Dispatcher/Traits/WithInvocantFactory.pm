@@ -23,15 +23,12 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Traits::WithInvocantFactory
-
-=head1 SYNOPSIS
-
-  use JSORB::Dispatcher::Traits::WithInvocantFactory;
+JSORB::Dispatcher::Traits::WithInvocantFactory - A dispatch trait which creates invocants
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This is very similar to L<JSORB::Dispatcher::Traits::WithInvocant> 
+except that it will create a new invocant for each procedure call.
 
 =head1 BUGS
 
@@ -45,7 +42,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

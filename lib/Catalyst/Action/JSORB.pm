@@ -74,7 +74,10 @@ Catalyst::Action::JSORB - Catalyst Action for JSORB dispatchers
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+This is basically a Catalyst Action that can be used as a gateway
+to a JSORB dispatcher. It will first look for the dispatcher in 
+the local controller config and failing that will look in the 
+global config.
 
 =head1 BUGS
 
@@ -88,7 +91,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

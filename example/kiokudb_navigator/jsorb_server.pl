@@ -66,23 +66,23 @@ my $db = KiokuDB->connect("bdb:dir=data", create => 1);
 
 my $s = $db->new_scope;
 
-my $me = Person->new(first_name => 'Stevan', last_name => 'Little', age => 35);
-my $lu = Person->new(first_name => 'Lucinda', last_name => 'Juliani', age => 32, spouse => $me);
-$me->spouse($lu);
+my $homer = Person->new(first_name => 'Homer', last_name => 'Simpson', age => 35);
+my $marge = Person->new(first_name => 'Marge', last_name => 'Simpson', age => 32, spouse => $homer);
+$homer->spouse($marge);
 
-my $minivan = Car->new(make => 'Toyota', model => 'Sienna', vin => '12345abcdefghijklmno', owner => $lu);
-my $volvo   = Car->new(make => 'Volvo', model => 'Sedan', vin => '12345abcdefghijklmno', owner => $me);
+my $minivan = Car->new(make => 'Toyota', model => 'Sienna', vin => '12345abcdefghijklmno', owner => $marge);
+my $volvo   = Car->new(make => 'Volvo', model => 'Sedan', vin => '12345abcdefghijklmno', owner => $homer);
 
-my %parents = (father => $me, mother => $lu);
+my %parents = (father => $homer, mother => $marge);
 
 my @children = (
-    Person->new(first_name => 'Xoe',       last_name => 'Juliani', age => 11, %parents),
-    Person->new(first_name => 'Annabelle', last_name => 'Juliani', age => 6,  %parents),
-    Person->new(first_name => 'Benjamin',  last_name => 'Juliani', age => 6,  %parents),        
+    Person->new(first_name => 'Bart',  last_name => 'Simpson', age => 11, %parents),
+    Person->new(first_name => 'Lisa',  last_name => 'Simpson', age => 9,  %parents),
+    Person->new(first_name => 'Magie', last_name => 'Simpson', age => 1,  %parents),        
 );
 
-my ($me_id) = $db->txn_do(sub {
-    $db->store( $me );
+my ($homer_id) = $db->txn_do(sub {
+    $db->store( $homer );
 });
 
 sub collapse_object {
@@ -100,7 +100,7 @@ my $ns = JSORB::Namespace->new(
                 JSORB::Procedure->new(
                     name  => 'lookup',
                     body  => sub {
-                        my $id  = shift || $me_id;
+                        my $id  = shift || $homer_id;
                         my $obj = $db->lookup($id);
                         collapse_object($obj);
                     },

@@ -53,15 +53,23 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Traits::WithStaticFiles
+JSORB::Server::Traits::WithStaticFiles - A JSORB::Server::Simple trait for static files
 
 =head1 SYNOPSIS
 
-  use JSORB::Server::Traits::WithStaticFiles;
+  JSORB::Server::Simple->new_with_traits(
+      traits     => [ 'JSORB::Server::Traits::WithStaticFiles' ],
+      doc_root   => [ $FindBin::Bin, '..', '..' ],
+      dispatcher => JSORB::Dispatcher::Path->new(
+          namespace => $ns,
+      )
+  )->run;
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+This is basically just a simple way to serve static files through
+your simple JSORB server. Its detection of files is B<very> niave, 
+you have been warned (patches welcome).
 
 =head1 BUGS
 
@@ -75,7 +83,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

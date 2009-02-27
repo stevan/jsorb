@@ -45,6 +45,8 @@ sub call {
     $result[0];
 }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -53,15 +55,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Method
-
-=head1 SYNOPSIS
-
-  use JSORB::Method;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
+JSORB::Method - An RPC Method
 
 =head1 BUGS
 
@@ -75,7 +69,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

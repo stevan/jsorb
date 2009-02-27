@@ -50,8 +50,6 @@ Catalyst::Action::JSORB::WithInvocant - Catalyst Action for JSORB Dispatcher
 This is very similar to L<Catalyst::Action::JSORB> but with a few extra 
 features to better handle dispatching to object instances. 
 
-=head1 METHODS 
-
 =head1 BUGS
 
 All complex software has bugs lurking in it, and this module is no 
@@ -64,7 +62,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

@@ -31,6 +31,9 @@ JS::JSORB - Javascript client for JSORB
 
 =head1 DESCRIPTION
 
+This is basically the JS:: module for the JSORB Javascript client.
+If you don't know about JS.pm, you should really check it out.
+
 =head1 BUGS
 
 All complex software has bugs lurking in it, and this module is no 
@@ -43,7 +46,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

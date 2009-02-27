@@ -23,15 +23,23 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Traits::WithInvocant
+JSORB::Server::Traits::WithInvocant - A JSORB::Server::Simple trait for working with invocants
 
 =head1 SYNOPSIS
 
-  use JSORB::Server::Traits::WithInvocant;
+  JSORB::Server::Simple->new_with_traits(
+      traits     => [ 'JSORB::Server::Traits::WithInvocant' ],
+      dispatcher => JSORB::Dispatcher::Path->new_with_traits(
+          traits    => [ 'JSORB::Dispatcher::Traits::WithInvocant' ],
+          namespace => $ns,
+      ),
+      invocant   => App::Foo->new(bar => 'Bar', baz => 'Baz')
+  )->run;
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This is mostly for when you use the L<JSORB::Dispatcher::Traits::WithInvocant>
+trait with your dispatcher to make sure that the invocant is handled correctly.
 
 =head1 BUGS
 
@@ -45,7 +53,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

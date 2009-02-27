@@ -36,6 +36,8 @@ has 'fully_qualified_name' => (
     }
 );
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -44,15 +46,12 @@ __END__
 
 =head1 NAME
 
-JSORB::Element
-
-=head1 SYNOPSIS
-
-  use JSORB::Element;
+JSORB::Core::Element - A core JSORB element
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+Basically this is a named element that is assumed to have a parent
+object. Not much else here to see.
 
 =head1 BUGS
 
@@ -66,7 +65,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

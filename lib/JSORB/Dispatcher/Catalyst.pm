@@ -12,6 +12,8 @@ extends 'JSORB::Dispatcher::Path';
 
 has '+context_class' => (default => 'Catalyst');
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; no Moose::Util::TypeConstraints; 1;
 
 __END__
@@ -20,15 +22,13 @@ __END__
 
 =head1 NAME
 
-JSORB::Dispatcher::Catalyst
-
-=head1 SYNOPSIS
-
-  use JSORB::Dispatcher::Catalyst;
+JSORB::Dispatcher::Catalyst - A dispatcher for use with Catalyst
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+All this basically does it apply the L<JSORB::Dispatcher::Traits::WithContext>
+to L<JSORB::Dispatcher::Path> and tell it to use the L<Catalyst> context
+class. 
 
 =head1 BUGS
 
@@ -42,7 +42,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

@@ -6,7 +6,14 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 30;
+use Test::More;
+
+BEGIN {
+    eval "use Catalyst;";
+    plan skip_all => "Catalyst is required for this test" if $@;        
+    plan tests => 30;    
+}
+
 use Catalyst::Test 'TestApp';
 
 {

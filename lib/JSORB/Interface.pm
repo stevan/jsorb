@@ -61,6 +61,8 @@ augment 'merge_with' => sub {
     ];
 };
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -69,15 +71,12 @@ __END__
 
 =head1 NAME
 
-JSORB::Interface
-
-=head1 SYNOPSIS
-
-  use JSORB::Interface;
+JSORB::Interface - A JSORB Interface
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+A JSORB Interface is where you place your methods and procedures, 
+it is a subclass of JSORB::Namespace.
 
 =head1 BUGS
 
@@ -91,7 +90,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

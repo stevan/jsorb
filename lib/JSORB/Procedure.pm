@@ -122,6 +122,8 @@ sub check_return_value_spec {
                  . "we expected " . $rv->name;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -130,15 +132,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Procedure
-
-=head1 SYNOPSIS
-
-  use JSORB::Procedure;
-
-=head1 DESCRIPTION
-
-=head1 METHODS
+JSORB::Procedure - A basic RPC procedure 
 
 =head1 BUGS
 
@@ -152,7 +146,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

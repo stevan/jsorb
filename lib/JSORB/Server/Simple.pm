@@ -9,8 +9,6 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';
 
-# has '+_trait_namespace' => ( default => 'JSORB::Server::Traits' );
-
 has 'dispatcher' => (
     is       => 'ro',
     isa      => 'JSORB::Dispatcher::Path',   
@@ -100,6 +98,8 @@ sub build_handler {
 # -SL
 sub BUILD { (shift)->server_engine }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -108,15 +108,13 @@ __END__
 
 =head1 NAME
 
-JSORB::Server::Simple
-
-=head1 SYNOPSIS
-
-  use JSORB::Server::Simple;
+JSORB::Server::Simple - A simple HTTP server for JSORB
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This is just a simple JSORB server built on top of L<HTTP::Engine>.
+This is probably best used for development and small standalone apps
+but probably not in heavy production use (hence the ::Simple). 
 
 =head1 BUGS
 
@@ -130,7 +128,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

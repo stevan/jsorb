@@ -66,15 +66,12 @@ __END__
 
 =head1 NAME
 
-JSORB::Types - A set of 
-
-=head1 SYNOPSIS
-
-  use JSORB::Types;
+JSORB::Types - A set of Moose types used in JSORB
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+This is basically the type library for JSORB, if you are diving 
+into JSORB at a deeper level you should read the source.
 
 =head1 BUGS
 
@@ -88,7 +85,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

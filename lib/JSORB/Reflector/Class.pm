@@ -23,6 +23,8 @@ sub build_procedure_list {
     ]
 }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -31,13 +33,13 @@ __END__
 
 =head1 NAME
 
-JSORB::Reflector::Class
-
-=head1 SYNOPSIS
-
-  use JSORB::Reflector::Class;
+JSORB::Reflector::Class - Automatic JSORB namespace/interface construction
 
 =head1 DESCRIPTION
+
+This uses Moose/Class::MOP introspection to build a JSORB namespace.
+It fully respects inheritance and will reflect all applicable methods 
+of the class.
 
 =head2 NOTE ABOUT REFLECTION
 
@@ -45,8 +47,6 @@ The automated reflector will B<NOT> reflect methods in L<Moose::Object>.
 This is because this rarely makes sense for it to do so. If you have a 
 particular use case in which this does make sense, then you are free to 
 specifically request the method by building the procedure list yourself.
-
-=head1 METHODS 
 
 =head1 BUGS
 
@@ -60,7 +60,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

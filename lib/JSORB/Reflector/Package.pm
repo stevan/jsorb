@@ -74,6 +74,8 @@ sub build_procedure_list {
     } $self->introspector->list_all_package_symbols('CODE') ]
 }
 
+__PACKAGE__->meta->make_immutable;
+
 no Moose; 1;
 
 __END__
@@ -82,15 +84,14 @@ __END__
 
 =head1 NAME
 
-JSORB::Reflector::Package
-
-=head1 SYNOPSIS
-
-  use JSORB::Reflector::Package;
+JSORB::Reflector::Package - Automatic JSORB namespace/interface construction 
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+This uses Moose/Class::MOP introspection to build a JSORB namespace.
+It is only for packages, so it will look in the immediate package 
+B<only> and does not in any way acknowledge inheritance (see 
+L<JSORB::Reflector::Class> for that).
 
 =head1 BUGS
 
@@ -104,7 +105,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 

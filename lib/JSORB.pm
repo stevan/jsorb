@@ -23,26 +23,28 @@ JSORB - Javascript Object Request Broker
 
 =head1 SYNOPSIS
 
-  # Set up a simple JSORB server
-
   use JSORB;
   use JSORB::Server::Simple;
   use JSORB::Dispatcher::Path;
   use JSORB::Reflector::Package;
   
+  # create some code to expose over RPC
   {
       package Math::Simple;
       use Moose;
 
       sub add { $_[0] + $_[1] }
   }
- 
   
+  # Set up a simple JSORB server  
   JSORB::Server::Simple->new(
       port       => 8080,
       dispatcher => JSORB::Dispatcher::Path->new(
           namespace => JSORB::Reflector::Package->new(
+              # tell JSORB to introspect the package
               introspector   => Math::Simple->meta,
+              # add some type information 
+              # about the procedure
               procedure_list => [
                   { name => 'add', spec => [ ('Int', 'Int') => 'Int' ] }
               ]
@@ -110,6 +112,15 @@ my TODO list. These clients will provide a more natural style of
 programming with Javascript objects and reduce the heavy RPC 
 slant of the current usage patterns.
 
+=head2 GETTING STARTED
+
+The documentation is very sparse and I apologize for that, but the 
+test suite has a lot of good stuff to read and there is a couple 
+neat things in the example directory. If you want to know more 
+about the Javascript end there are tests for that as well. As this 
+module matures more the docs will improve, but as mentioned above,
+it is still pretty new and we have big plans for its future.
+
 =head1 BUGS
 
 All complex software has bugs lurking in it, and this module is no 
@@ -122,7 +133,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 
