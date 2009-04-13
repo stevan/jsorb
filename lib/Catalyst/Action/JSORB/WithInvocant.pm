@@ -19,7 +19,7 @@ sub execute {
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
     
     (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst::WithInvocant'))
-        || confess "Bad dispatcher - $dispatcher";   
+        || confess "Bad dispatcher - $dispatcher (must inherit JSORB::Dispatcher::Catalyst::WithInvocant)";
     
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;
     my $call      = $marshaler->request_to_call($c->request);    
