@@ -1,7 +1,7 @@
 package JSORB::Dispatcher::Traits::WithInvocantFactory;
 use Moose::Role;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'JSORB::Dispatcher::Traits::WithInvocant';

@@ -3,7 +3,7 @@ use Moose;
 
 use Path::Router;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';
@@ -14,8 +14,8 @@ has 'namespace' => (
     trigger  => sub {
         my $self = shift;
         $self->_clear_router if $self->_has_router;
-        # the router will get 
-        # initialized the next 
+        # the router will get
+        # initialized the next
         # time it is needed
     }
 );
@@ -26,7 +26,7 @@ has 'router' => (
     lazy      => 1,
     builder   => '_build_router',
     clearer   => '_clear_router',
-    predicate => '_has_router',    
+    predicate => '_has_router',
 );
 
 sub handler {
@@ -35,14 +35,14 @@ sub handler {
         || confess "You must pass a JSON::RPC::Common::Procedure::Call to the handler, not $call";
 
     my $procedure = $self->get_procedure_from_call($call);
-    
+
     return $self->throw_error(
         $call, "Could not find method " . $call->method . " in " . $self->namespace->name
     ) unless defined $procedure;
 
     my $res = eval { $self->call_procedure($procedure, $call, @args) };
-    if ($@) {
-        return $self->throw_error($call, "$@");
+    if (my $e = $@) {
+        return $self->throw_error($call, $e);
     }
     return $call->return_result($res);
 }
@@ -51,7 +51,7 @@ sub get_procedure_from_call {
     my ($self, $call) = @_;
     my $match = $self->router->match($call->method);
     return unless $match;
-    return $match->target;    
+    return $match->target;
 }
 
 sub call_procedure {
@@ -61,7 +61,7 @@ sub call_procedure {
 
 sub assemble_params_list {
     my ($self, $call, @args) = @_;
-    return $call->params_list;    
+    return $call->params_list;
 }
 
 sub throw_error {
@@ -69,7 +69,7 @@ sub throw_error {
     return $call->return_error(
         message => $message,
         code    => 1,
-    );    
+    );
 }
 
 # ........
@@ -137,7 +137,7 @@ JSORB::Dispatcher::Path - Simple path based dispatcher
 
 =head1 DESCRIPTION
 
-This module will dispatch RPC methods/procedures that are in a 
+This module will dispatch RPC methods/procedures that are in a
 path-like format, such as:
 
   { method : 'math/simple/add', params : [ 2, 2 ] }

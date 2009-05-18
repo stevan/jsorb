@@ -2,7 +2,7 @@ package JSORB::Server::Traits::WithStaticFiles;
 use Moose::Role;
 use MooseX::Types::Path::Class;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has 'doc_root' => (

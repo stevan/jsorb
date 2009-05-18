@@ -1,4 +1,8 @@
 Revision history for Perl extension JSORB
 
+0.02
+    JSORB::Dispatcher::Path
+    - no longer stringifies exceptions by default
+
 0.01 Fri. Feb. 27, 2009
     - First release to an unsuspecting world!

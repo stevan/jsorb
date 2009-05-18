@@ -4,7 +4,7 @@ use Moose;
 use HTTP::Engine;
 use JSON::RPC::Common::Marshal::HTTP;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';

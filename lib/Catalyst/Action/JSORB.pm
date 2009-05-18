@@ -1,7 +1,7 @@
 package Catalyst::Action::JSORB;
 use Moose;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 use JSORB;
@@ -12,20 +12,20 @@ extends 'Catalyst::Action';
 sub execute {
     my $self = shift;
     my ($controller, $c) = @_;
-    
-    $self->NEXT::execute(@_); 
-    
+
+    $self->NEXT::execute(@_);
+
     # try local, but if none exists, use global
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};
-    
+
     (blessed $dispatcher && $dispatcher->isa('JSORB::Dispatcher::Catalyst'))
         || confess "Bad dispatcher - $dispatcher (must inherit JSORB::Dispatcher::Catalyst)";
-    
+
     my $marshaler = JSON::RPC::Common::Marshal::HTTP->new;
-    my $call      = $marshaler->request_to_call($c->request);    
+    my $call      = $marshaler->request_to_call($c->request);
     my $result    = $dispatcher->handler($call, $c);
-    
-    $marshaler->write_result_to_response($result, $c->response);    
+
+    $marshaler->write_result_to_response($result, $c->response);
 }
 
 no Moose; 1;
@@ -41,9 +41,9 @@ Catalyst::Action::JSORB - Catalyst Action for JSORB dispatchers
 =head1 SYNOPSIS
 
   use Catalyst::Action::JSORB;
-  
-  TestApp->config( 
-      name => 'TestApp', 
+
+  TestApp->config(
+      name => 'TestApp',
       who  => 'World',
       # add the JSORB config ...
       'Action::JSORB' => JSORB::Dispatcher::Catalyst->new(
@@ -51,7 +51,7 @@ Catalyst::Action::JSORB - Catalyst Action for JSORB dispatchers
               name     => 'Test',
               elements => [
                   JSORB::Interface->new(
-                      name       => 'App',            
+                      name       => 'App',
                       procedures => [
                           JSORB::Procedure->new(
                               name  => 'greeting',
@@ -62,7 +62,7 @@ Catalyst::Action::JSORB - Catalyst Action for JSORB dispatchers
                               spec  => [ 'Catalyst' => 'Str' ],
                           ),
                       ]
-                  )            
+                  )
               ]
           )
       )
@@ -70,18 +70,18 @@ Catalyst::Action::JSORB - Catalyst Action for JSORB dispatchers
 
   TestApp->setup;
 
-  sub rpc : Global : ActionClass(JSORB) {}  
+  sub rpc : Global : ActionClass(JSORB) {}
 
 =head1 DESCRIPTION
 
 This is basically a Catalyst Action that can be used as a gateway
-to a JSORB dispatcher. It will first look for the dispatcher in 
-the local controller config and failing that will look in the 
+to a JSORB dispatcher. It will first look for the dispatcher in
+the local controller config and failing that will look in the
 global config.
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

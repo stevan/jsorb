@@ -1,7 +1,7 @@
 package JSORB::Server::Traits::WithInvocant;
 use Moose::Role;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has 'invocant' => (

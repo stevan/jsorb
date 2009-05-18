@@ -4,7 +4,7 @@ use Moose::Role;
 use Text::SimpleTable;
 use JSON ();
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 around 'build_handler' => sub {
