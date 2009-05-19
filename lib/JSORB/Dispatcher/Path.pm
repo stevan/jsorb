@@ -40,8 +40,12 @@ sub handler {
         $call, "Could not find method " . $call->method . " in " . $self->namespace->name
     ) unless defined $procedure;
 
-    my $res = eval { $self->call_procedure($procedure, $call, @args) };
-    if (my $e = $@) {
+    my ($res, $e) = do {
+        local $@;
+        my $r = eval { $self->call_procedure($procedure, $call, @args) };
+        ($r, $@)
+    };
+    if ($e) {
         return $self->throw_error($call, $e);
     }
     return $call->return_result($res);
