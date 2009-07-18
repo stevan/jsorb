@@ -1,10 +1,20 @@
 Revision history for Perl extension JSORB
 
-0.02
+0.02 Sat. July 18, 2009
+    * Catalyst::Action::JSORB
+      Catalyst::Action::JSORB::WithInvocant
+      - better error messages
+
     * JSORB::Dispatcher::Path
       - no longer stringifies exceptions by default
+
     * JSORB::Core::Element
       - fixed is_weak_ref mis-spelling
+
+    * example/
+      - cleaning up and updating the examples and
+        including a README to explain how to run
+        them
 
 0.01 Fri. Feb. 27, 2009
     - First release to an unsuspecting world!
