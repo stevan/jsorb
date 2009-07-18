@@ -7,13 +7,13 @@
 <script language="javascript">
 
 var c = new JSORB.Client ({
-    base_url       : 'http://localhost:9999/', 
-    base_namespace : '/kiokudb/navigator/' 
+    base_url       : 'http://localhost:9999/',
+    base_namespace : '/kiokudb/navigator/'
 });
 
 function lookup (id, callback) {
     c.call(
-        { method : 'lookup', params : [ id ] }, 
+        { method : 'lookup', params : [ id ] },
         callback
     );
 }
@@ -22,27 +22,57 @@ $(document).ready(function () {
     load_object( $('#root'), '' )
 });
 
-function create_object_link (ref_id, label) {    
-    return '<a id="' + ref_id + '" class="loader" href="#">' + label + '</a><ul class="hidden"></ul>';
+function create_object_link (ref_id, label) {
+    if (ref_id.indexOf('.data') != -1) {
+        ref_id = ref_id.substring(0, ref_id.indexOf('.data'));
+    }
+    return '<a id="' + ref_id + '" class="loader" href="javascript:void(0)">'
+         + label
+         + '</a><ul class="hidden"></ul>';
 }
 
-function load_object (container, id) {
-    lookup(id, function (obj) {
-        var out = '';
+function is_ref_id (id) {
+    if (id.indexOf('-') == 8 && id.lastIndexOf('-') == 23) {
+        return true;
+    }
+    return false;
+}
 
-        for (var prop in obj) {
+function create_object_repr (obj) {
+    var out = '';
+    for (var prop in obj) {
+        if (prop == '$ref') {
+            out += create_object_link( obj[prop], '[ + ]' );
+        }
+        else {
             out += '<li><div class="label">' + prop + '</div><div class="value">';
-            console.log(obj[prop].constructor);
             switch (obj[prop].constructor) {
                 case Object:
-                    out += create_object_link( obj[prop]['$ref'], '[ + ]' );
+                    out += '<ul>' + create_object_repr( obj[prop] ) + '</ul>';
                     break;
                 case Array:
                     out += '<ul class="collection">';
                     for (var i = 0; i < obj[prop].length; i++) {
-                        out += '<li><div class="value">'
-                            + create_object_link( obj[prop][i]['$ref'], '[ ' + i + ' ]' )
-                            + '</div></li>';
+                        switch (obj[prop][i].constructor) {
+                            case Object:
+                                out += '<li><div class="value">'
+                                if (obj[prop][i]['$ref'] == undefined) {
+                                    out += '<ul>' + create_object_repr( obj[prop][i] ) + '</ul>';
+                                }
+                                else {
+                                    out += create_object_link( obj[prop][i]['$ref'], '[ ' + i + ' ]' );
+                                }
+                                out += '</div></li>';
+                                break;
+                            case String:
+                                if (is_ref_id(obj[prop][i])) {
+                                    out += "<div>" + create_object_link( obj[prop][i], '[ ' + i + ' ]' ) + "</div>";
+                                }
+                                else {
+                                    out += "<div>" + obj[prop][i] + "</div>";
+                                }
+                                break;
+                        }
                     }
                     out += '</ul>';
                     break;
@@ -51,8 +81,13 @@ function load_object (container, id) {
             }
             out += "</div></li>"
         }
+    }
+    return out;
+}
 
-        $(container).html(out);
+function load_object (container, id) {
+    lookup(id, function (obj) {
+        $(container).html( create_object_repr( obj ) );
 
         $('.loader', container).click(function () {
             var id = $(this).attr('id');
@@ -72,7 +107,6 @@ function load_object (container, id) {
 <body>
 <h1>KiokuDB Navigator</h1>
 <hr/>
-<ul id="root">
-</ul>
+<ul id="root" />
 </body>
 </html>

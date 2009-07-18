@@ -6,10 +6,10 @@ all_from 'lib/JSORB.pm';
 
 requires 'Moose'                      => 0;
 requires 'MooseX::AttributeHelpers'   => 0;
-requires 'MooseX::Traits'             => 0;
+requires 'MooseX::Traits'             => '0.06';
 
 requires 'Set::Object'                => 0;
-requires 'JSON::RPC::Common'          => 0;
+requires 'JSON::RPC::Common'          => '0.05';
 requires 'Path::Router'               => 0;
 
 # for the JSORB.js client library

@@ -1,22 +1,21 @@
 
 body {
     font-family: sans-serif;
-    background : #B7D244;
+    background : #DDDDDD;
 }
 
 #root {
-    padding-left : 0px;      
-    border-left  : 25px solid #82AF59;
+    padding-left : 0px;
 }
 
 ul {
     list-style    : none;
-    border-top    : 3px solid #99AACC;
-    background    : #D6EC72;
+    border-top    : 1px solid #666666;
+    background    : #CCCCCC;
 }
 
 li {
-    border     : 3px solid #336699;
+    border     : 1px solid #AAAAAA;
     background : white;
 }
 
@@ -27,8 +26,7 @@ li {
 }
 
 .collection {
-    border-top    : 3px solid #C09A60;
-    background    : #F5DE6E;    
+    border-top    : 1px solid #CCCCCC;
 }
 
 .value a {
@@ -44,7 +42,7 @@ li {
     clear : both;
 }
 
-.hidden {    
+.hidden {
     display : none;
 }
 

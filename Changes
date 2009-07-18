@@ -1,8 +1,10 @@
 Revision history for Perl extension JSORB
 
 0.02
-    JSORB::Dispatcher::Path
-    - no longer stringifies exceptions by default
+    * JSORB::Dispatcher::Path
+      - no longer stringifies exceptions by default
+    * JSORB::Core::Element
+      - fixed is_weak_ref mis-spelling
 
 0.01 Fri. Feb. 27, 2009
     - First release to an unsuspecting world!

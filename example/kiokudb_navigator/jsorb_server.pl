@@ -23,20 +23,20 @@ use KiokuDB::Backend::Serialize::JSPON::Collapser;
     has ['first_name', 'last_name'] => (is => 'rw', isa => 'Str');
     has 'age'      => (is => 'rw', isa => 'Int');
     has 'spouse'   => (is => 'rw', isa => 'Person');
-    
+
     has ['mother', 'father'] => (
-        is        => 'ro', 
-        isa       => 'Person', 
-        weak_ref  => 1, 
+        is        => 'ro',
+        isa       => 'Person',
+        weak_ref  => 1,
         trigger   => sub {
             my ($self, $parent) = @_;
             $parent->add_child($self);
         }
     );
-    
+
     has 'children' => (
         metaclass => 'Collection::Array',
-        is        => 'rw', 
+        is        => 'rw',
         isa       => 'ArrayRef[Person]',
         default   => sub { [] },
         provides  => {
@@ -45,20 +45,20 @@ use KiokuDB::Backend::Serialize::JSPON::Collapser;
     );
 
     has 'car' => (is => 'rw', isa => 'Car');
-    
+
     package Car;
     use Moose;
-    
+
     has 'owner' => (
-        is       => 'rw', 
-        isa      => 'Person', 
+        is       => 'rw',
+        isa      => 'Person',
         weak_ref => 1,
         trigger  => sub {
             my ($self, $owner) = @_;
             $owner->car($self);
         }
-    );    
-    
+    );
+
     has [ 'make', 'model', 'vin' ] => (is => 'rw');
 }
 
@@ -78,7 +78,7 @@ my %parents = (father => $homer, mother => $marge);
 my @children = (
     Person->new(first_name => 'Bart',  last_name => 'Simpson', age => 11, %parents),
     Person->new(first_name => 'Lisa',  last_name => 'Simpson', age => 9,  %parents),
-    Person->new(first_name => 'Magie', last_name => 'Simpson', age => 1,  %parents),        
+    Person->new(first_name => 'Magie', last_name => 'Simpson', age => 1,  %parents),
 );
 
 my ($homer_id) = $db->txn_do(sub {
@@ -87,8 +87,13 @@ my ($homer_id) = $db->txn_do(sub {
 
 sub collapse_object {
     my $object = shift;
-    my $collapser = KiokuDB::Backend::Serialize::JSPON::Collapser->new;
-    return $collapser->collapse_jspon($db->live_objects->object_to_entry($object));
+    KiokuDB::Backend::Serialize::JSPON::Collapser
+        ->new
+        ->collapse_jspon(
+            $db->live_objects->object_to_entry(
+                $object
+            )
+        );
 }
 
 my $ns = JSORB::Namespace->new(

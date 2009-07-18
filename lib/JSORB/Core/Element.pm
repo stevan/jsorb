@@ -7,16 +7,16 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 has 'name' => (
     is       => 'ro',
-    isa      => 'Str',   
+    isa      => 'Str',
     required => 1
 );
 
 has 'parent' => (
-    is          => 'ro',
-    writer      => '_set_parent',
-    isa         => 'JSORB::Core::Element',
-    is_weak_ref => 1,  
-    predicate   => 'has_parent', 
+    is        => 'ro',
+    writer    => '_set_parent',
+    isa       => 'JSORB::Core::Element',
+    weak_ref  => 1,
+    predicate => 'has_parent',
 );
 
 has 'fully_qualified_name' => (
@@ -24,12 +24,12 @@ has 'fully_qualified_name' => (
     init_arg  => undef,
     is        => 'ro',
     isa       => 'ArrayRef[Str]',
-    lazy      => 1,   
+    lazy      => 1,
     default   => sub {
         my $current = shift;
-        my @full_name = ($current->name);        
+        my @full_name = ($current->name);
         while ($current->has_parent) {
-            $current = $current->parent;            
+            $current = $current->parent;
             unshift @full_name => $current->name;
         }
         \@full_name;
@@ -55,7 +55,7 @@ object. Not much else here to see.
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 
