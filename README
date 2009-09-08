@@ -1,4 +1,4 @@
-JSORB version 0.02
+JSORB version 0.03
 ===========================
 
 See the individual module documentation for more information
@@ -22,7 +22,9 @@ This module requires these other modules and libraries:
     Set::Object
     JSON::RPC::Common
     Path::Router
-    HTTP::Engine
+    HTTP::Server::Simple
+    HTTP::Request
+    HTTP::Response
     MooseX::Types::Path::Class
     Text::SimpleTable
 

@@ -1,7 +1,7 @@
 package JSORB::Dispatcher::Catalyst::WithInvocant;
 use Moose;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Dispatcher::Path';

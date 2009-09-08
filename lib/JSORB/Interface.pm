@@ -7,7 +7,7 @@ use Set::Object 'set';
 use JSORB::Procedure;
 use JSORB::Method;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Namespace';

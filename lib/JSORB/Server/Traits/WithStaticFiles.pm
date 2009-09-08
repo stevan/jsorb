@@ -2,7 +2,7 @@ package JSORB::Server::Traits::WithStaticFiles;
 use Moose::Role;
 use MooseX::Types::Path::Class;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has 'doc_root' => (
@@ -19,25 +19,29 @@ around 'build_handler' => sub {
 
     return sub {
         my $request = shift;
-        
+
         # NOTE:
-        # this is **extremely** niave, it simply 
-        # tests for something that looks like a 
-        # file by seeing if the path has a trailing 
+        # this is **extremely** niave, it simply
+        # tests for something that looks like a
+        # file by seeing if the path has a trailing
         # extension, but even that is done poorly
-        # so at some point this will need to be 
+        # so at some point this will need to be
         # fixed to be more sane in some way.
         # - SL
-        if ($request->path =~ /\.[a-zA-Z]+$/) {
+        if ($request->uri =~ /\/(.*\.[a-zA-Z]+)$/) {
 
-            my $file = $self->doc_root->file($request->path);
+            my $file = $self->doc_root->file($1);
 
-            return return HTTP::Engine::Response->new(status => 404)
+            return HTTP::Response->new( 404, 'File Not Found' )
                 unless -e $file;
 
-            return HTTP::Engine::Response->new(
-                status => 200,
-                body   => $file->openr
+            my $contents = $file->slurp;
+
+            return HTTP::Response->new(
+                200,
+                'OK',
+                [ "Content-length" => length $contents ],
+                $contents
             );
         }
 
@@ -68,7 +72,7 @@ JSORB::Server::Traits::WithStaticFiles - A JSORB::Server::Simple trait for stati
 =head1 DESCRIPTION
 
 This is basically just a simple way to serve static files through
-your simple JSORB server. Its detection of files is B<very> niave, 
+your simple JSORB server. Its detection of files is B<very> niave,
 you have been warned (patches welcome).
 
 =head1 BUGS

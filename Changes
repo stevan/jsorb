@@ -1,5 +1,11 @@
 Revision history for Perl extension JSORB
 
+0.03
+    * JSORB::Server::Simple
+      - removed HTTP::Engine dependency
+        and converted to regular just
+        HTTP::Server::Simple
+
 0.02 Sat. July 18, 2009
     * Catalyst::Action::JSORB
       Catalyst::Action::JSORB::WithInvocant

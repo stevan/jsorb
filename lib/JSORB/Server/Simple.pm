@@ -1,63 +1,83 @@
 package JSORB::Server::Simple;
 use Moose;
 
-use HTTP::Engine;
+use HTTP::Server::Simple;
+use HTTP::Request;
+use HTTP::Response;
+
 use JSON::RPC::Common::Marshal::HTTP;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';
 
 has 'dispatcher' => (
     is       => 'ro',
-    isa      => 'JSORB::Dispatcher::Path',   
+    isa      => 'JSORB::Dispatcher::Path',
     required => 1,
 );
 
 has 'host' => (
     is      => 'ro',
-    isa     => 'Str',   
+    isa     => 'Str',
     default => sub { 'localhost' },
 );
 
 has 'port' => (
     is      => 'ro',
-    isa     => 'Int',   
+    isa     => 'Int',
     default => sub { 9999 },
 );
 
 has 'request_marshaler' => (
     is      => 'ro',
-    isa     => 'JSON::RPC::Common::Marshal::HTTP',   
-    default => sub { JSON::RPC::Common::Marshal::HTTP->new },
-);
-
-has 'server_engine' => (
-    is      => 'ro',
-    isa     => 'HTTP::Engine', 
-    lazy    => 1,  
-    default => sub {    
-        my $self = shift;
-        HTTP::Engine->new(
-             interface => {
-                 module => 'ServerSimple',
-                 args   => {
-                     host => $self->host,
-                     port => $self->port,
-                 },
-                 request_handler => $self->handler,
-             },
-         );
+    isa     => 'JSON::RPC::Common::Marshal::HTTP',
+    default => sub {
+        JSON::RPC::Common::Marshal::HTTP->new
     },
-    handles => [qw[run]]
 );
 
 has 'handler' => (
     is      => 'ro',
-    isa     => 'CodeRef',   
+    isa     => 'CodeRef',
     lazy    => 1,
     builder => 'build_handler',
+);
+
+has 'server_engine' => (
+    is      => 'ro',
+    isa     => 'Moose::Meta::Class',
+    lazy    => 1,
+    default => sub {
+        my $self    = shift;
+        my $handler = $self->handler;
+        Moose::Meta::Class->create_anon_class(
+            superclasses => [ 'HTTP::Server::Simple' ],
+            methods      => {
+                'setup'   => sub {
+                    my ($self, %setup) = @_;
+                    $self->{'__setup__'} = \%setup;
+                },
+                'headers' => sub {
+                    my ($self, $headers) = @_;
+                    $self->{'__headers__'} = $headers;
+                },
+                'handler' => sub {
+                    my $self   = shift;
+                    my $output = $handler->(
+                        HTTP::Request->new(
+                            $self->{'__setup__'}->{'method'},
+                            $self->{'__setup__'}->{'request_uri'},
+                            $self->{'__headers__'}
+                        )
+                    )->as_string;
+                    chomp($output);
+                    $self->stdio_handle->print( "HTTP/1.0 $output" );
+                }
+            }
+        );
+    },
 );
 
 sub prepare_handler_args { () }
@@ -65,38 +85,45 @@ sub prepare_handler_args { () }
 sub build_handler {
     my $self = shift;
     my $m    = $self->request_marshaler;
-    my $d    = $self->dispatcher;        
+    my $d    = $self->dispatcher;
     return sub {
-        my $request  = shift;
-        my $response = HTTP::Engine::Response->new;
+        my $request = shift;
+        my $response;
         eval {
             my $call     = $m->request_to_call($request);
             my $result   = $d->handler(
                 $call,
                 $self->prepare_handler_args($call, $request)
             );
-            $m->write_result_to_response($result, $response);
+            $response = $m->result_to_response($result);
         };
         if ($@) {
             # NOTE:
             # should this return a JSONRPC error?
             # or is the standard HTTP Error okay?
             # - SL
-            $response->status(500);
-            $response->body($@);
-        }    
+            $response = HTTP::Response->new( 500, 'Internal Server Error', {}, "$@" );
+        }
         return $response;
-    }        
+    }
 }
 
 # NOTE:
 # we need to initialize the server
-# engine so that it can be run 
-# after a fork() such as in our 
+# engine so that it can be run
+# after a fork() such as in our
 # tests. Otherwise the laziness
 # messes things up.
 # -SL
 sub BUILD { (shift)->server_engine }
+
+sub run {
+    my $self   = shift;
+    my $server = $self->server_engine->name->new;
+    $server->port( $self->port );
+    $server->host( $self->host );
+    $server->run;
+}
 
 __PACKAGE__->meta->make_immutable;
 
@@ -114,11 +141,11 @@ JSORB::Server::Simple - A simple HTTP server for JSORB
 
 This is just a simple JSORB server built on top of L<HTTP::Engine>.
 This is probably best used for development and small standalone apps
-but probably not in heavy production use (hence the ::Simple). 
+but probably not in heavy production use (hence the ::Simple).
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 
