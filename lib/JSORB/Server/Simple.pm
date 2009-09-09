@@ -5,6 +5,7 @@ use HTTP::Server::Simple;
 use HTTP::Request;
 use HTTP::Response;
 
+use Try::Tiny;
 use JSON::RPC::Common::Marshal::HTTP;
 
 our $VERSION   = '0.03';
@@ -88,23 +89,20 @@ sub build_handler {
     my $d    = $self->dispatcher;
     return sub {
         my $request = shift;
-        my $response;
-        eval {
-            my $call     = $m->request_to_call($request);
-            my $result   = $d->handler(
+        try {
+            my $call   = $m->request_to_call($request);
+            my $result = $d->handler(
                 $call,
                 $self->prepare_handler_args($call, $request)
             );
-            $response = $m->result_to_response($result);
-        };
-        if ($@) {
+            $m->result_to_response($result);
+        } catch {
             # NOTE:
             # should this return a JSONRPC error?
             # or is the standard HTTP Error okay?
             # - SL
-            $response = HTTP::Response->new( 500, 'Internal Server Error', {}, "$@" );
-        }
-        return $response;
+            HTTP::Response->new( 500, 'Internal Server Error', [], $_ );
+        };
     }
 }
 

@@ -7,6 +7,7 @@ all_from 'lib/JSORB.pm';
 requires 'Moose'                      => 0;
 requires 'MooseX::AttributeHelpers'   => 0;
 requires 'MooseX::Traits'             => '0.06';
+requires 'Try::Tiny'                  => 0;
 
 requires 'Set::Object'                => 0;
 requires 'JSON::RPC::Common'          => '0.05';
