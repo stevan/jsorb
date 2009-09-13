@@ -111,17 +111,23 @@ sub build_handler {
 # engine so that it can be run
 # after a fork() such as in our
 # tests. Otherwise the laziness
-# messes things up.
+# messes things up. However it needs
+# to be lazy in order to use the
+# other attributes when creating
+# itself.
 # -SL
 sub BUILD { (shift)->server_engine }
 
-sub run {
+sub _setup_server {
     my $self   = shift;
     my $server = $self->server_engine->name->new;
     $server->port( $self->port );
     $server->host( $self->host );
-    $server->run;
+    $server;
 }
+
+sub run        { (shift)->_setup_server->run        }
+sub background { (shift)->_setup_server->background }
 
 __PACKAGE__->meta->make_immutable;
 
@@ -137,9 +143,10 @@ JSORB::Server::Simple - A simple HTTP server for JSORB
 
 =head1 DESCRIPTION
 
-This is just a simple JSORB server built on top of L<HTTP::Engine>.
-This is probably best used for development and small standalone apps
-but probably not in heavy production use (hence the ::Simple).
+This is just a simple JSORB server built on top of
+L<HTTP::Server::Simple>. This is probably best used for
+development and small standalone apps but probably not in
+heavy production use (hence the ::Simple).
 
 =head1 BUGS
 
