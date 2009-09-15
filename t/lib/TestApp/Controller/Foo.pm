@@ -8,27 +8,27 @@ BEGIN { extends 'Catalyst::Controller' };
 {
     package Test::App;
     use Moose;
-    
+
     has 'greeting_prefix' => (
         is      => 'ro',
-        isa     => 'Str',   
+        isa     => 'Str',
         default => sub { 'Yo!' },
     );
-    
+
     sub foo {
         my ($self, $who) = @_;
-        return $self->greeting_prefix . " What's up $who";    
+        return $self->greeting_prefix . " What's up $who";
     }
-    
+
     package Test::App::Foo;
     use Moose;
-    
+
     has 'counter' => (
         is      => 'ro',
-        isa     => 'Int',   
+        isa     => 'Int',
     );
-    
-    sub bar { 'FOO::BAR(' . (shift)->counter . ')' }    
+
+    sub bar { 'FOO::BAR(' . (shift)->counter . ')' }
 }
 
 my $COUNTER = 1;
@@ -49,35 +49,35 @@ __PACKAGE__->config(
                 return (
                     counter => $COUNTER++
                 );
-            }            
+            }
         },
         namespace     => JSORB::Namespace->new(
             name     => 'Test',
             elements => [
                 JSORB::Interface->new(
-                    name       => 'App',            
+                    name       => 'App',
                     procedures => [
                         JSORB::Method->new(
                             name        => 'greeting',
                             method_name => 'foo',
                             spec        => [ 'Str' => 'Str' ],
-                        ),    
+                        ),
                     ],
                     elements => [
                         JSORB::Interface->new(
-                            name       => 'Foo',            
+                            name       => 'Foo',
                             procedures => [
                                 JSORB::Method->new(
-                                    name        => 'bar',
-                                    spec        => [ 'Unit' => 'Str' ],
-                                ),    
+                                    name => 'bar',
+                                    spec => [ 'Unit' => 'Str' ],
+                                ),
                             ]
-                        )                    
+                        )
                     ]
-                )            
+                )
             ]
         )
-    )    
+    )
 );
 
 sub rpc : Local : ActionClass(JSORB::WithInvocant) {}

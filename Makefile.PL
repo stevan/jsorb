@@ -13,6 +13,10 @@ requires 'Set::Object'                => 0;
 requires 'JSON::RPC::Common'          => '0.05';
 requires 'Path::Router'               => 0;
 
+# for the JSORB.pm client library
+requires 'Class::Inspector'           => 0;
+requires 'File::Copy'                 => 0;
+
 # for the JSORB.js client library
 requires 'JS'                         => 0;
 requires 'JS::JSON'                   => 0;

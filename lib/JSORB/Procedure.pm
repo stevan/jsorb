@@ -132,7 +132,7 @@ __END__
 
 =head1 NAME
 
-JSORB::Procedure - A basic RPC procedure 
+JSORB::Procedure - A basic RPC procedure
 
 =head1 BUGS
 

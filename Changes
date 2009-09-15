@@ -1,5 +1,16 @@
 Revision history for Perl extension JSORB
 
+0.04
+    - JSORB::Types
+      - removed the ScalarRef type (we can't
+        really support it).
+        - clarified types in the docs
+
+    - JS::JSORB
+      - added support for finding, slurping
+        and copying the JSORB.js file
+        - added details in the docs
+
 0.03 Thurs. Sept. 10, 2009
     - added Try::Tiny dependency and
       converted all exception handling
