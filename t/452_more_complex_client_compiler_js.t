@@ -54,17 +54,22 @@ my $ns = JSORB::Namespace->new(
                 ),
             ],
             elements => [
-                JSORB::Interface->new(
-                    name       => 'Long',
-                    procedures => [
-                        JSORB::Procedure->new(
-                            name  => 'multiply',
-                            spec  => [ 'Int' => 'Int' => 'Int' ],
-                        ),
-                        JSORB::Procedure->new(
-                            name  => 'divide',
-                            spec  => [ 'Int' => 'Int' => 'Int' ],
-                        ),
+                JSORB::Namespace->new(
+                    name     => 'Very',
+                    elements => [
+                        JSORB::Interface->new(
+                            name       => 'Long',
+                            procedures => [
+                                JSORB::Procedure->new(
+                                    name  => 'multiply',
+                                    spec  => [ 'Int' => 'Int' => 'Int' ],
+                                ),
+                                JSORB::Procedure->new(
+                                    name  => 'divide',
+                                    spec  => [ 'Int' => 'Int' => 'Int' ],
+                                ),
+                            ]
+                        )
                     ]
                 )
             ]
@@ -124,21 +129,23 @@ Math.More.prototype.div = function (arg1, arg2, callback) {
     )
 }
 
-Math.More.Long = function (url) {
+if (Math.More.Very == undefined) Math.More.Very = function () {};
+
+Math.More.Very.Long = function (url) {
     this._JSORB_CLIENT = new JSORB.Client ({
         base_url       : url,
-        base_namespace : '/math/more/long/'
+        base_namespace : '/math/more/very/long/'
     });
 }
 
-Math.More.Long.prototype.multiply = function (arg1, arg2, callback) {
+Math.More.Very.Long.prototype.multiply = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'multiply', params : [ arg1, arg2 ] },
         callback
     )
 }
 
-Math.More.Long.prototype.divide = function (arg1, arg2, callback) {
+Math.More.Very.Long.prototype.divide = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'divide', params : [ arg1, arg2 ] },
         callback

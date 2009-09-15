@@ -31,7 +31,7 @@ sub _compile_namespace {
         }
         else {
             my $name = join '.' => @{ $element->fully_qualified_name };
-            push @out => "if (${name} == undefined) ${name} = function () {};";
+            push @out => '', "if (${name} == undefined) ${name} = function () {};";
         }
 
         push @out => $self->_compile_namespace( $element );
