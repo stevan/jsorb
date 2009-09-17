@@ -93,21 +93,21 @@ __END__
 
 =head1 NAME
 
-JSORB::Client::Compiler::Javascript - A Moosey solution to this problem
+JSORB::Client::Compiler::Javascript - A JSORB Javascript client compiler
 
 =head1 SYNOPSIS
 
   use JSORB::Client::Compiler::Javascript;
 
+  my $c = JSORB::Client::Compiler::Javascript->new;
+  $c->compile(
+      namespace => $namespace,
+      to        => [ qw[ webroot js MyLib.js ] ]
+  );
+
 =head1 DESCRIPTION
 
-=head1 METHODS
-
-=over 4
-
-=item B<>
-
-=back
+TODO
 
 =head1 BUGS
 

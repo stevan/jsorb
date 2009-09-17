@@ -98,19 +98,43 @@ __END__
 
 =head1 NAME
 
-JSORB::Client::Compiler - A Moosey solution to this problem
-
-=head1 SYNOPSIS
-
-  use JSORB::Client::Compiler;
+JSORB::Client::Compiler - A base role for JSORB client compilers
 
 =head1 DESCRIPTION
+
+TODO
 
 =head1 METHODS
 
 =over 4
 
-=item B<>
+=item B<compile ( namespace => $namespace, ?to => $to )>
+
+=item B<get_all_errors>
+
+=back
+
+=head1 REQUIRED METHODS
+
+=over 4
+
+=item B<compile_root_namespace ( $root_namespace )>
+
+=item B<compile_namespace ( $namespace )>
+
+=item B<compile_interface ( $interface )>
+
+=item B<compile_procedure ( $procedure )>
+
+=back
+
+=head1 UTILITY METHODS FOR SUBCLASSES
+
+=over 4
+
+=item B<perform_unit_of_work ( \&work )>
+
+=item B<print_to_buffer ( @data )>
 
 =back
 
