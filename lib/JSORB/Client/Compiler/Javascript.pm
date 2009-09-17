@@ -1,93 +1,81 @@
 package JSORB::Client::Compiler::Javascript;
 use Moose;
 
+use Try::Tiny;
+
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-sub compile_namespace {
+with 'JSORB::Client::Compiler';
+
+sub compile_root_namespace {
     my ($self, $root) = @_;
-
-    confess "You must compile the namespace from it's root"
-        if $root->has_parent;
-
-    my @out;
-
-    my $name = $root->name;
-
-    push @out => "if (${name} == undefined) var ${name} = function () {};";
-    push @out => $self->_compile_namespace( $root );
-
-    join "\n" => @out, '';
+    $self->perform_unit_of_work(sub {
+        my $name = $root->name;
+        $self->print_to_buffer( "if (${name} == undefined) var ${name} = function () {};" );
+        $self->compile_namespace( $root );
+    });
 }
 
-sub _compile_namespace {
+sub compile_namespace {
     my ($self, $ns) = @_;
+    $self->perform_unit_of_work(sub {
+        foreach my $element ( @{ $ns->elements } ) {
+            if ($element->isa('JSORB::Interface')) {
+                $self->compile_interface( $element );
+            }
+            else {
+                my $name = join '.' => @{ $element->fully_qualified_name };
+                $self->print_to_buffer( "if (${name} == undefined) ${name} = function () {};" );
+            }
 
-    my @out;
-
-    foreach my $element ( @{ $ns->elements } ) {
-        if ($element->isa('JSORB::Interface')) {
-            push @out => '', $self->compile_interface( $element );
+            $self->compile_namespace( $element );
         }
-        else {
-            my $name = join '.' => @{ $element->fully_qualified_name };
-            push @out => '', "if (${name} == undefined) ${name} = function () {};";
-        }
-
-        push @out => $self->_compile_namespace( $element );
-    }
-
-    @out;
+    });
 }
 
 sub compile_interface {
     my ($self, $i) = @_;
+    $self->perform_unit_of_work(sub {
+        my @name = @{ $i->fully_qualified_name };
+        my $name = join '.' => @name;
+        my $path = join '/' => map { lc } @name;
 
-    my @out;
+        $self->print_to_buffer(
+             "${name} = function (url) {",
+             "    this._JSORB_CLIENT = new JSORB.Client ({",
+             "        base_url       : url,",
+             "        base_namespace : '/${path}/'",
+             "    });",
+             "}",
+        );
 
-    my @name = @{ $i->fully_qualified_name };
-    my $name = join '.' => @name;
-    my $path = join '/' => map { lc } @name;
-
-    push @out => (
-         "${name} = function (url) {",
-         "    this._JSORB_CLIENT = new JSORB.Client ({",
-         "        base_url       : url,",
-         "        base_namespace : '/${path}/'",
-         "    });",
-         "}",
-    );
-
-    foreach my $proc ( @{ $i->procedures } ) {
-        push @out => '', $self->compile_procedure( $proc );
-    }
-
-    @out;
+        foreach my $proc ( @{ $i->procedures } ) {
+            $self->compile_procedure( $proc );
+        }
+    });
 }
 
 sub compile_procedure {
     my ($self, $p) = @_;
+    $self->perform_unit_of_work(sub {
+        ($p->has_spec)
+            || confess "Currently we only support compiling procedures with specs";
 
-    ($p->has_spec)
-        || confess "Currently we only support compiling procedures with specs";
+        my @name       = @{ $p->fully_qualified_name };
+        my $local_name = pop @name;
+        my $i_name     = join '.'  => @name;
+        my $arg_list   = join ', ' => map { "arg${_}" } 1 .. @{ $p->parameter_spec };
 
-    my @out;
-
-    my @name       = @{ $p->fully_qualified_name };
-    my $local_name = pop @name;
-    my $i_name     = join '.'  => @name;
-    my $arg_list   = join ', ' => map { "arg${_}" } 1 .. @{ $p->parameter_spec };
-
-    push @out => (
-        "${i_name}.prototype.${local_name} = function (${arg_list}, callback) {",
-        "    this._JSORB_CLIENT.call(",
-        "        { method : '${local_name}', params : [ ${arg_list} ] },",
-        "        callback",
-        "    )",
-        "}",
-    );
-
-    @out;
+        $self->print_to_buffer(
+            "${i_name}.prototype.${local_name} = function (${arg_list}, callback) {",
+            "    this._JSORB_CLIENT.call(",
+            "        { method : '${local_name}', params : [ ${arg_list} ] },",
+            "        callback",
+            "    )",
+            "}",
+        );
+    });
 }
 
 

@@ -10,7 +10,6 @@ use Test::LongString;
 BEGIN {
     use_ok('JSORB');
     use_ok('JSORB::Client::Compiler::Javascript');
-    use_ok('JSORB::Reflector::Package');
 }
 
 {
@@ -81,70 +80,60 @@ isa_ok($ns, 'JSORB::Namespace');
 my $compiler = JSORB::Client::Compiler::Javascript->new;
 isa_ok($compiler, 'JSORB::Client::Compiler::Javascript');
 
-#diag $compiler->compile_namespace( $ns );
+#diag $compiler->compile( namespace => $ns );
 
 is_string(
-    $compiler->compile_namespace( $ns ),
+    $compiler->compile( namespace => $ns ),
 q{if (Math == undefined) var Math = function () {};
-
 Math.Simple = function (url) {
     this._JSORB_CLIENT = new JSORB.Client ({
         base_url       : url,
         base_namespace : '/math/simple/'
     });
 }
-
 Math.Simple.prototype.add = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'add', params : [ arg1, arg2 ] },
         callback
     )
 }
-
 Math.Simple.prototype.sub = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'sub', params : [ arg1, arg2 ] },
         callback
     )
 }
-
 Math.More = function (url) {
     this._JSORB_CLIENT = new JSORB.Client ({
         base_url       : url,
         base_namespace : '/math/more/'
     });
 }
-
 Math.More.prototype.mul = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'mul', params : [ arg1, arg2 ] },
         callback
     )
 }
-
 Math.More.prototype.div = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'div', params : [ arg1, arg2 ] },
         callback
     )
 }
-
 if (Math.More.Very == undefined) Math.More.Very = function () {};
-
 Math.More.Very.Long = function (url) {
     this._JSORB_CLIENT = new JSORB.Client ({
         base_url       : url,
         base_namespace : '/math/more/very/long/'
     });
 }
-
 Math.More.Very.Long.prototype.multiply = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'multiply', params : [ arg1, arg2 ] },
         callback
     )
 }
-
 Math.More.Very.Long.prototype.divide = function (arg1, arg2, callback) {
     this._JSORB_CLIENT.call(
         { method : 'divide', params : [ arg1, arg2 ] },
@@ -153,5 +142,5 @@ Math.More.Very.Long.prototype.divide = function (arg1, arg2, callback) {
 }
 }, '... got the right compiled output');
 
-
+is_deeply( [ $compiler->get_all_errors ], [], '... no compilation errors' );
 
