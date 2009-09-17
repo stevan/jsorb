@@ -11,6 +11,7 @@ use JSORB;
 use JSORB::Dispatcher::Path;
 use JSORB::Server::Simple;
 use JSORB::Server::Traits::WithStaticFiles;
+use JSORB::Client::Compiler::Javascript;
 
 use Forest;
 use Forest::Tree;
@@ -81,6 +82,11 @@ my $ns = JSORB::Namespace->new(
             ]
         )
     ]
+);
+
+JSORB::Client::Compiler::Javascript->new->compile(
+    namespace => $ns,
+    to        => [ $FindBin::Bin, 'ForestTree.js' ]
 );
 
 JSORB::Server::Simple->new_with_traits(

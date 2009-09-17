@@ -1,5 +1,11 @@
 This document explains how to run the examples for JSORB.
 
+NOTE:
+Each example will compile a Javascript client library
+inside the given directory. It might be interesting to
+look at these if you want, the Javascript is pretty
+readable.
+
 -----------------------------------------------------------
 simple/
 -----------------------------------------------------------

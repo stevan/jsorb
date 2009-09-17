@@ -3,6 +3,7 @@
 <script language="javascript" src="../js/jquery-1.2.6.js"></script>
 <script language="javascript" src="../js/json2.js"></script>
 <script language="javascript" src="../../lib/JS/JSORB.js"></script>
+<script language="javascript" src="ForestTree.js"></script>
 <script language="javascript">
 
 function draw_node (c) {
@@ -17,8 +18,10 @@ function draw_node (c) {
          + '"></ul></li>';
 }
 
+var forest = new Forest.Tree ('http://localhost:9999/');
+
 $(document).ready(function () {
-   get_root_tree(function (t) {
+   forest.get_root_tree(function (t) {
        var out = '';
        $.each(t.children, function (i, c) { out += draw_node(c) });
        $('#tree').html(out);
@@ -30,31 +33,12 @@ function load_subtree (uid, node) {
         $('#children_' + uid).toggle();
     }
     else {
-        get_tree_at(uid, function (t) {
+        forest.get_tree_at(uid, function (t) {
             var out = '';
             $.each(t.children, function (i, c) { out += draw_node(c) });
             $('#children_' + uid).html(out);
         });
     }
-}
-
-var c = new JSORB.Client ('http://localhost:9999/');
-
-function get_root_tree (callback) {
-    c.call(
-        { method: "/forest/tree/get_root_tree" },
-        callback
-    );
-}
-
-function get_tree_at (uid, callback) {
-    c.call(
-        {
-            method : "/forest/tree/get_tree_at",
-            params : [ uid ]
-        },
-        callback
-    );
 }
 
 </script>

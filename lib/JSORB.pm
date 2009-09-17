@@ -27,12 +27,12 @@ JSORB - Javascript Object Request Broker
   use JSORB::Server::Simple;
   use JSORB::Dispatcher::Path;
   use JSORB::Reflector::Package;
+  use JSORB::Client::Compiler::Javascript;
 
   # create some code to expose over RPC
   {
       package Math::Simple;
       use Moose;
-
       sub add { $_[0] + $_[1] }
   }
 
@@ -52,13 +52,31 @@ JSORB - Javascript Object Request Broker
       )
   )->run;
 
-  # go to the URL directly ...
+  ## Now you can ...
+
+  ## go to the URL directly
+
   http://localhost:8080/?method=/math/simple/add&params=[2,2]
 
-  # and get back a response ...
-  {"jsonrpc":"2.0","result":2}
+  # and get back a response
+  { "jsonrpc" : "2.0", "result" : 2 }
 
-  # or use the Javascript client library
+  ## compile your own Javascript client
+  ## library for use in a web page ...
+
+  my $c = JSORB::Client::Compiler::Javascript->new;
+  $c->compile(
+      namespace => $namespace,
+      to        => [ 'webroot', 'js', 'MathSimple.js' ]
+  );
+
+  # and in your JS
+
+  var math = new Math.Simple ( 'http://localhost:8080' );
+  math.add( 2, 2, function (result) { alert(result) } );
+
+  ## or use the more low level
+  ## JSORB client library directly
 
   var c = new JSORB.Client ({
       base_url : 'http://localhost:8080/',
@@ -70,16 +88,6 @@ JSORB - Javascript Object Request Broker
   }, function (result) {
       alert(result)
   });
-
-  # or compile your own Javascript client library
-
-  my $c = JSORB::Client::Compiler::Javascript->new;
-  print '<script language="javascript">', $c->compile_namespace( $namespace ), '</script>';
-
-  // then in your JS
-
-  var math = new Math.Simple ( 'http://localhost:8080' );
-  math.add( 2, 2, function (result) { alert(result) } );
 
 =head1 DESCRIPTION
 
@@ -116,11 +124,6 @@ Currently this is more focused on RPC calls between Perl on the
 server side and Javascript on the client side. Eventually we will
 have a Perl client and possibly some servers written in other
 languages as well.
-
-Plans for auto-generation of the Javascript clients is also on
-my TODO list. These clients will provide a more natural style of
-programming with Javascript objects and reduce the heavy RPC
-slant of the current usage patterns.
 
 =head2 GETTING STARTED
 

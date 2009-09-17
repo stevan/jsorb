@@ -11,6 +11,7 @@ use JSORB;
 use JSORB::Dispatcher::Path;
 use JSORB::Server::Simple;
 use JSORB::Server::Traits::WithStaticFiles;
+use JSORB::Client::Compiler::Javascript;
 
 use KiokuDB;
 use KiokuDB::Backend::Serialize::JSPON::Collapser;
@@ -62,7 +63,7 @@ use KiokuDB::Backend::Serialize::JSPON::Collapser;
     has [ 'make', 'model', 'vin' ] => (is => 'rw');
 }
 
-my $db = KiokuDB->connect("bdb:dir=data", create => 1);
+my $db = KiokuDB->connect("hash");
 
 my $s = $db->new_scope;
 
@@ -85,17 +86,6 @@ my ($homer_id) = $db->txn_do(sub {
     $db->store( $homer );
 });
 
-sub collapse_object {
-    my $object = shift;
-    KiokuDB::Backend::Serialize::JSPON::Collapser
-        ->new
-        ->collapse_jspon(
-            $db->live_objects->object_to_entry(
-                $object
-            )
-        );
-}
-
 my $ns = JSORB::Namespace->new(
     name     => 'KiokuDB',
     elements => [
@@ -107,13 +97,24 @@ my $ns = JSORB::Namespace->new(
                     body  => sub {
                         my $id  = shift || $homer_id;
                         my $obj = $db->lookup($id);
-                        collapse_object($obj);
+                        KiokuDB::Backend::Serialize::JSPON::Collapser
+                            ->new
+                            ->collapse_jspon(
+                                $db->live_objects->object_to_entry(
+                                    $obj
+                                )
+                            );
                     },
                     spec  => [ 'Str' => 'HashRef' ]
                 )
             ]
         )
     ]
+);
+
+JSORB::Client::Compiler::Javascript->new->compile(
+    namespace => $ns,
+    to        => [ $FindBin::Bin, 'KiokuDB.js' ]
 );
 
 JSORB::Server::Simple->new_with_traits(

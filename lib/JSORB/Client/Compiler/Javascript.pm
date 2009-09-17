@@ -65,12 +65,16 @@ sub compile_procedure {
         my @name       = @{ $p->fully_qualified_name };
         my $local_name = pop @name;
         my $i_name     = join '.'  => @name;
-        my $arg_list   = join ', ' => map { "arg${_}" } 1 .. @{ $p->parameter_spec };
+        my @params     = map { "arg${_}" } 1 .. grep { !/Unit/ } @{ $p->parameter_spec };
+
+        my $passed_param_list = @params ? ('[ ' . (join ", " => @params) . ' ]') : '[]';
+        my $full_param_list   = join ", " => @params, 'callback';
+
 
         $self->print_to_buffer(
-            "${i_name}.prototype.${local_name} = function (${arg_list}, callback) {",
+            "${i_name}.prototype.${local_name} = function (${full_param_list}) {",
             "    this._JSORB_CLIENT.call(",
-            "        { method : '${local_name}', params : [ ${arg_list} ] },",
+            "        { method : '${local_name}', params : ${passed_param_list} },",
             "        callback",
             "    )",
             "}",

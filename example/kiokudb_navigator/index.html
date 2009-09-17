@@ -4,19 +4,10 @@
 <script language="javascript" src="../js/jquery-1.2.6.js"></script>
 <script language="javascript" src="../js/json2.js"></script>
 <script language="javascript" src="../../lib/JS/JSORB.js"></script>
+<script language="javascript" src="KiokuDB.js"></script>
 <script language="javascript">
 
-var c = new JSORB.Client ({
-    base_url       : 'http://localhost:9999/',
-    base_namespace : '/kiokudb/navigator/'
-});
-
-function lookup (id, callback) {
-    c.call(
-        { method : 'lookup', params : [ id ] },
-        callback
-    );
-}
+var nav = new KiokuDB.Navigator ('http://localhost:9999/');
 
 $(document).ready(function () {
     load_object( $('#root'), '' )
@@ -86,7 +77,7 @@ function create_object_repr (obj) {
 }
 
 function load_object (container, id) {
-    lookup(id, function (obj) {
+    nav.lookup(id, function (obj) {
         $(container).html( create_object_repr( obj ) );
 
         $('.loader', container).click(function () {
