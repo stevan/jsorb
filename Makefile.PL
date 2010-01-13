@@ -33,7 +33,7 @@ requires 'HTTP::Request'              => 0;
 requires 'HTTP::Response'             => 0;
 
 # for JSORB::Server::Traits::WithStaticFiles
-requires 'MooseX::Types::Path::Class' => 0;
+#requires 'MooseX::Types::Path::Class' => 0;
 
 # for JSORB::Server::Traits::WithDebug
 requires 'Text::SimpleTable'          => 0;

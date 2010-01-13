@@ -1,6 +1,6 @@
 Revision history for Perl extension JSORB
 
-0.04
+0.04 Wed. Jan. 13, 2010
     + JSORB::Client::Compiler
       - base role for client compilers
 

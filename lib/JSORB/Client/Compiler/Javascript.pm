@@ -100,6 +100,11 @@ JSORB::Client::Compiler::Javascript - A JSORB Javascript client compiler
   use JSORB::Client::Compiler::Javascript;
 
   my $c = JSORB::Client::Compiler::Javascript->new;
+
+  # compile to a string
+  my $js_string = $c->compile( namespace => $namespace );
+
+  # compile to a file
   $c->compile(
       namespace => $namespace,
       to        => [ qw[ webroot js MyLib.js ] ]

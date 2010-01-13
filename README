@@ -1,4 +1,4 @@
-JSORB version 0.03
+JSORB version 0.04
 ===========================
 
 See the individual module documentation for more information
@@ -19,13 +19,23 @@ This module requires these other modules and libraries:
     Moose
     MooseX::AttributeHelpers
     MooseX::Traits
+    MooseX::Params::Validate
+
+    Try::Tiny
     Set::Object
     JSON::RPC::Common
     Path::Router
+
+    Buffer::Transactional
+    MooseX::Types::Path::Class
+
+    Class::Inspector
+    File::Copy
+
     HTTP::Server::Simple
     HTTP::Request
     HTTP::Response
-    MooseX::Types::Path::Class
+
     Text::SimpleTable
 
 And optionally
@@ -40,7 +50,7 @@ for the JSORB.js client library
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2008-2009 Infinity Interactive, Inc.
+Copyright (C) 2008-2010 Infinity Interactive, Inc.
 
 http://www.iinteractive.com
 
