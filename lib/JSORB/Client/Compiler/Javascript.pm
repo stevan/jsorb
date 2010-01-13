@@ -3,7 +3,7 @@ use Moose;
 
 use Try::Tiny;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'JSORB::Client::Compiler';

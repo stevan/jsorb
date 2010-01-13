@@ -4,7 +4,7 @@ use MooseX::AttributeHelpers;
 
 use Set::Object 'set';
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Core::Element';

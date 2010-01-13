@@ -2,7 +2,7 @@ package JSORB::Dispatcher::Catalyst;
 use Moose;
 use Moose::Util::TypeConstraints;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 class_type 'Catalyst' unless find_type_constraint('Catalyst');

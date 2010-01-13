@@ -1,7 +1,7 @@
 package JSORB::Dispatcher::Traits::WithContext;
 use Moose::Role;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has 'context_class' => (

@@ -4,7 +4,7 @@ use Moose;
 use Try::Tiny;
 use Path::Router;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 with 'MooseX::Traits';

@@ -1,7 +1,7 @@
 package JSORB::Reflector::Class;
 use Moose;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'JSORB::Reflector::Package';

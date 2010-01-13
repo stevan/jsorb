@@ -8,7 +8,7 @@ use Buffer::Transactional;
 use IO::Scalar;
 use Try::Tiny;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 has '_buffer' => (
