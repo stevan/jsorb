@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 7;
 use Test::Exception;
 
 use FindBin;
@@ -15,12 +15,6 @@ BEGIN {
 
 my $js_jsorb = JS::JSORB->new;
 isa_ok($js_jsorb, 'JS::JSORB');
-
-is(
-   $js_jsorb->file->absolute,
-   file( $FindBin::Bin )->parent->file( 'lib', 'JS', 'JSORB.js' ),
-   '... got the correct path'
-);
 
 is(
    $js_jsorb->file->slurp,
