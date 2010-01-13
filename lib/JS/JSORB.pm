@@ -3,31 +3,29 @@ use Moose;
 
 use Class::Inspector;
 use File::Copy  'copy';
-use Path::Class 'file';
+use Path::Class ();
 
 our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
-has 'js_file' => (
+has 'file' => (
     is       => 'ro',
     isa      => 'Path::Class::File',
     lazy     => 1,
     default  => sub {
-        file( Class::Inspector->loaded_filename( __PACKAGE__ ) )
-         ->parent
-         ->file('JSORB.js')
+        Path::Class::File->new(
+            Class::Inspector->loaded_filename( __PACKAGE__ )
+        )->parent->file(
+            'JSORB.js'
+        )
     },
-    handles  => {
-        'js_text'     => 'slurp',
-        'js_file_abs' => 'absolute',
-    }
 );
 
-sub copy_js_file_to {
+sub copy_file_to {
     my ($self, $to) = @_;
     (defined $to)
         || confess "You must provide a place to copy to";
-    copy( $self->js_file->stringify, $to )
+    copy( $self->file->stringify, $to )
         || confess "Could not copy JSORB.js to $to because: $!";
 }
 
@@ -51,13 +49,10 @@ JS::JSORB - Javascript client for JSORB
   # get a Path::Class::File
   # representing the path to
   # the JSORB.js file
-  my $jsorb_js_file = $js_jsorb->js_file;
-
-  print $js_jsorb->js_file; # prints the path of the JSORB.js file
-  print $js_jsorb->js_text; # slurps the JSORB.js file into a string
+  my $jsorb_js_file = $js_jsorb->file;
 
   # install a local copy
-  $js_jsorb->copy_js_file_to( '/webroot/js/JSORB.js' );
+  $js_jsorb->copy_file_to( '/webroot/js/JSORB.js' );
 
   // in your javascript ...
 
@@ -86,21 +81,12 @@ directory (such as your web directory).
 
 =over 4
 
-=item I<js_file>
+=item I<file>
 
-This returns Path::Class::File instance that represents the path
+This returns L<Path::Class::File> instance that represents the path
 to the JSORB.js file.
 
-=item I<js_file_abs>
-
-This returns Path::Class::File instance that represents the path
-to the absolute path to the JSORB.js file.
-
-=item I<js_text>
-
-This returns the entire text of the JSORB.js file.
-
-=item I<copy_js_file_to( $dest )>
+=item I<copy_file_to( $dest )>
 
 This will copy the JSORB.js file to C<$dest>.
 
@@ -118,7 +104,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008-2009 Infinity Interactive, Inc.
+Copyright 2008-2010 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 
