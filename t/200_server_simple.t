@@ -3,9 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 18;
 use Test::Exception;
 use Test::WWW::Mechanize;
+
+use JSON qw/  from_json /;
 
 BEGIN {
     use_ok('JSORB');
@@ -64,17 +66,11 @@ unless ($pid) {
 }
 else {
     my $mech = Test::WWW::Mechanize->new;  
-    $mech->get_ok('http://localhost:9999/?method=/math/simple/add&params=[2,2]');    
-    $mech->content_is('{"jsonrpc":"2.0","result":4}', '... got the content we expected');
-    
-    $mech->get_ok('http://localhost:9999/?method=/math/simple/sub&params=[4,2]');    
-    $mech->content_is('{"jsonrpc":"2.0","result":2}', '... got the content we expected');    
-    
-    $mech->get_ok('http://localhost:9999/?method=/math/simple/mul&params=[2,2]');    
-    $mech->content_is('{"jsonrpc":"2.0","result":4}', '... got the content we expected');    
-    
-    $mech->get_ok('http://localhost:9999/?method=/math/simple/div&params=[10,2]');    
-    $mech->content_is('{"jsonrpc":"2.0","result":5}', '... got the content we expected');    
+
+    $mech->method_call_is( 'add', '2,2', 4 );
+    $mech->method_call_is( 'sub', '4,2', 2 );
+    $mech->method_call_is( 'mul', '2,2', 4 );
+    $mech->method_call_is( 'div', '10,2', 5 );
     
     ok($mech->get('http://localhost:9999/?method=/math/simple/div&params=[2,0]'), '... the content with an error');  
     is($mech->status, 500, '... got the HTTP error we expected');  
@@ -91,6 +87,18 @@ END {
     kill TERM => $pid; 
 }
 
+sub Test::WWW::Mechanize::method_call_is {
+    my ( $mech, $method, $params, $result ) = @_;
 
+    subtest "$method($params)" => sub {
+        my $uri = "http://localhost:9999/?method=/math/simple/$method&params=[$params]";
+        $mech->get_ok( $uri );
 
+        my $expected = {};
+        $expected->{jsonrpc} = '2.0';
+        $expected->{result} = $result;
+
+        is_deeply( from_json( $mech->content ) => $expected, 'expected results' );
+    }
+}
 

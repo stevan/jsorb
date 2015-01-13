@@ -8,10 +8,12 @@ use lib "$FindBin::Bin/lib";
 
 use Test::More;
 
+use JSON qw/ from_json /;
+
 BEGIN {
     eval "use Catalyst;";
-    plan skip_all => "Catalyst is required for this test" if $@;        
-    plan tests => 30;    
+    plan skip_all => "Catalyst is required for this test" if $@;
+    plan tests => 18;
 }
 
 use Catalyst::Test 'TestApp';
@@ -26,7 +28,10 @@ use Catalyst::Test 'TestApp';
     is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
     is($response->code, 200, '.. response code is 200');
        
-    is($response->content, '{"jsonrpc":"2.0","result":"Hello World"}', '... got the content we expected');
+    is_deeply( from_json( $response->content ), {
+        jsonrpc => "2.0",
+        result => "Hello World"
+    }, '... got the content we expected');
 }
 
 
@@ -40,7 +45,9 @@ use Catalyst::Test 'TestApp';
     is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
     is($response->code, 200, '.. response code is 200');
        
-    is($response->content, '{"jsonrpc":"2.0","result":"Yo! What\'s up Man"}', '... got the content we expected');
+    is_deeply( from_json($response->content), {
+        jsonrpc => "2.0", result => "Yo! What's up Man"
+    }, '... got the content we expected');
 }
 
 {
@@ -53,10 +60,15 @@ use Catalyst::Test 'TestApp';
     is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
     is($response->code, 200, '.. response code is 200');
        
-    is($response->content, '{"jsonrpc":"2.0","result":"Hey! What\'s up Man"}', '... got the content we expected');
+    is_deeply( from_json( $response->content ) => {
+            jsonrpc => '2.0',
+            result => "Hey! What's up Man",
+        },
+        "got the expected content",
+    );
 }
 
-foreach my $i (1 .. 3) {
+foreach my $i (1 .. 3) { subtest "FOO::BAR($i)" => sub {
     my $request = HTTP::Request->new( 
         GET => 'http://localhost:3000/foo/rpc?method=/test/app/foo/bar&params=[]' 
     );
@@ -66,6 +78,9 @@ foreach my $i (1 .. 3) {
     is($response->header( 'Content-Type' ), 'application/json-rpc', '... got the JSON content-type');    
     is($response->code, 200, '.. response code is 200');
        
-    is($response->content, '{"jsonrpc":"2.0","result":"FOO::BAR(' . $i . ')"}', '... got the content we expected');
-}
+    is_deeply(
+        from_json($response->content), { jsonrpc => "2.0", result => "FOO::BAR($i)"}, 
+            '... got the content we expected'
+    );
+} }
 
