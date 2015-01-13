@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 43;
+use Test::More tests => 40;
 use Test::Exception;
 
 use JSON::RPC::Common::Procedure::Call;
@@ -145,9 +145,9 @@ is($point->z, 200, '... our object has been altered successfully');
 
 is($point->y, 200, '... our object has been altered successfully');
 
-{
+subtest 'inexistant method' => sub {
     my $call = JSON::RPC::Common::Procedure::Call->new(
-        method => "/my/point3d/isa",
+        method => "/my/point3d/inexistant",
         params => ['My::Point'],
     );
     
@@ -157,8 +157,8 @@ is($point->y, 200, '... our object has been altered successfully');
     ok(!$res->has_result, '... we have a result, not an error');
     ok($res->has_error, '... we have a result, not an error');
 
-    like($res->error->message, qr/Could not find method \/my\/point3d\/isa/, '... got the right error');
-}
+    like($res->error->message, qr/Could not find method \/my\/point3d\/inexistant/, '... got the right error');
+};
 
 {
     my $call = JSON::RPC::Common::Procedure::Call->new(
