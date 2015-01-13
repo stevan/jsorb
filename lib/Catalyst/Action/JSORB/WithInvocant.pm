@@ -7,13 +7,15 @@ our $AUTHORITY = 'cpan:STEVAN';
 use JSORB;
 use JSON::RPC::Common::Marshal::HTTP;
 
+use MRO::Compat;
+
 extends 'Catalyst::Action';
 
 sub execute {
     my $self = shift;
     my ($controller, $c) = @_;
 
-    $self->NEXT::execute(@_);
+    $self->next::method(@_);
 
     # try local, but if none exists, use global
     my $dispatcher = $controller->config->{'Action::JSORB'} || $c->config->{'Action::JSORB'};

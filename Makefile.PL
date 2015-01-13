@@ -9,6 +9,8 @@ requires 'MooseX::AttributeHelpers'   => 0;
 requires 'MooseX::Traits'             => '0.06';
 requires 'MooseX::Params::Validate'   => 0;
 
+requires 'MRO::Compat'                => 0;
+
 requires 'Try::Tiny'                  => 0;
 requires 'Set::Object'                => 0;
 requires 'JSON::RPC::Common'          => '0.05';
